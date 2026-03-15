@@ -1,26 +1,31 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Inter:wght@400;700;900&display=swap');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+:root { color-scheme: light !important; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background-color: #ffffff !important;
+  color: #000000;
+  overflow: hidden;
 }
+
+/* 잡지 지면: Navbar(150px) 한참 아래에서 글이 시작되도록 설정 */
+.magazine-page {
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+  padding-top: 250px; /* 👈 여기서 확실히 아래로 밉니다 */
+  padding-bottom: 80px;
+  padding-left: 12%;
+  padding-right: 12%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.font-serif-mag { font-family: 'Cormorant Garamond', serif; }
+.font-sans-mag { font-family: 'Inter', sans-serif; }
