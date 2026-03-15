@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "node -e \"require('fs').writeFileSync('out/.nojekyll', '')\" && gh-pages -d out -b deploy-branch"
+    "bundle": "inline-assets out/index.html out/single-index.html",
+    "build": "next build",
+    "inline": "node inline.js && rm -f out/*.txt",
+    "deploy": "npm run build && gh-pages -d out -b deploy",
+    "deploy2": "gh-pages -d out -b deploy2"
   },
   "dependencies": {
     "framer-motion": "^12.36.0",
@@ -24,6 +27,9 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "gh-pages": "^6.3.0",
+    "inline-source-cli": "^2.0.0",
+    "posthtml": "^0.16.7",
+    "posthtml-inline-assets": "^3.1.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
