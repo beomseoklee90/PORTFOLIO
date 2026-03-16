@@ -78,6 +78,15 @@ export default function LawyerRightPage() {
             에 목적을 두었습니다. 신뢰는 화려함이 아니라 진정성 있는 구조에서
             나옵니다.
           </p>
+          <p>
+            <a
+              href="https://portfolio-lawfirm.djicebreaking.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              해당 포트폴리오 이동
+            </a>
+          </p>
         </div>
       </div>
 
