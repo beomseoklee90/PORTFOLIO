@@ -14,3 +14,11 @@ export default function RootLayout({
     </html>
   );
 }
+
+export const metadata = {
+  // 기존 설정들...
+  verification: {
+    google:
+      "google-site-verification=F18MFiZCi_LQ4IGQgqVNWXC7ytse5ie3ysEQ7vk4254",
+  },
+};
