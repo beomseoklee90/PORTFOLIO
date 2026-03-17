@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://portfolio.djicebreaker.site/sitemap.xml
+Sitemap: https://portfolio.djicebreaker.org/sitemap.xml
