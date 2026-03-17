@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://portfolio-lawfirm.djicebreaker.site/sitemap.xml
