@@ -38,9 +38,12 @@ export default function LawyerLeftPage() {
       >
         {isMobile ? (
           /* 모바일 최적화: 레이아웃 시프트 방지를 위해 WebkitBackfaceVisibility 추가 */
-          <img
+          <Image
             src="/images/lawyer_visual.webp"
             alt="Lawyer Visual Mobile"
+            fill // 부모 div 꽉 채우기
+            priority // 🚨 드디어 사용 가능! "미리 로드"
+            unoptimized={true} // 원본 화질 유지 (깜빡임 최소화)
             style={{
               width: "100%",
               height: "auto",

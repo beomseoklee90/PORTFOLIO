@@ -38,7 +38,10 @@ export default function IntroLeftPage() {
           /* 모바일용 최적화: 
              Next.js Image 대신 일반 img를 쓸 때도 스타일로 격리 
           */
-          <img
+          <Image
+            fill // 부모 div 꽉 채우기
+            priority // 🚨 드디어 사용 가능! "미리 로드"
+            unoptimized={true} // 원본 화질 유지 (깜빡임 최소화)
             src="/images/intro_visual.webp"
             alt="Philosophy Visual Mobile"
             style={{
