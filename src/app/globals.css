@@ -1,4 +1,3 @@
-/* 1. 폰트 로딩 */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
 
 @tailwind base;
@@ -14,150 +13,45 @@
   padding: 0;
   margin: 0;
   font-family: 'Pretendard', sans-serif !important;
+  /* 🚨 [반짝임 방지 1] 모든 요소에 하드웨어 가속 강제 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* [핵심 수정] 라이브러리와 Next.js Image가 충돌하지 않게 강제 규격화 */
-html, body, #__next, main {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background-color: #ffffff;
-}
-
-/* globals.css 내 main 부분 수정 */
-main {
+html, body {
   width: 100vw;
-  height: 100vh;
-  display: flex;          /* 자식을 중앙으로 */
-  justify-content: center; /* 가로 중앙 */
-  align-items: center;     /* 세로 중앙 - 이게 위로 쏠린 걸 내려줍니다 */
-  background-color: #000;
+  height: calc(var(--vh, 1vh) * 100);
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  position: fixed;        /* 스크롤 방지 */
-  top: 0;
-  left: 0;
+  background-color: #000; /* 흰색 반짝임 방지를 위해 배경을 검정으로 */
 }
 
-
-/* 🚨 이미지가 안 나오는 근본 원인 해결: 라이브러리 내부 태그 강제 확장 */
+/* 🚨 [반짝임 방지 2] 라이브러리 엔진 가속화 */
 .stf__parent, .stf__block, .magazine-canvas {
-  width: 100% !important;
   height: 100% !important;
-  position: relative !important;
-  display: block !important;
+  width: 100% !important;
+  backface-visibility: hidden; /* 뒷면 비침 및 깜빡임 방지 */
+  transform: translateZ(0);    /* GPU 가속 활성화 */
+  perspective: 1000px;         /* 3D 렌더링 안정화 */
 }
 
-/* 🚨 사장님의 page-section 규격 (글자 눌림 및 스크롤 해결) */
 .page-section {
   width: 100%;
   height: 100%;
-  min-height: 100vh; /* 물리적 최소 높이 확보 */
   position: relative;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  /* 글이 많아지면 내부에서 스크롤 */
-  overflow-y: auto !important; 
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  isolation: isolate; /* 사장님의 정석 코드 유지 */
+  overflow: hidden; /* 내부 스크롤이 반짝임을 유발할 수 있어 우선 차단 */
+  isolation: isolate;
+  /* 🚨 [반짝임 방지 3] 페이지 전환 시 잔상 제거 */
+  will-change: transform;
 }
 
-/* 타이포그래피 (찌그러짐 방지를 위해 가변 크기 최소화) */
-h1 {
-  font-weight: 900;
-  font-size: 3rem; /* clamp 대신 확실한 크기 권장 */
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  word-break: keep-all;
-}
-
-p {
-  font-weight: 400;
-  font-size: 1.125rem;
-  line-height: 1.75;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-/* 이미지 레이어 우선순위 확보 */
+/* 🚨 [반짝임 방지 4] 이미지 렌더링 고정 */
 .page-section img {
   z-index: 1 !important;
-  /* Next.js unoptimized 상태에서 경로 인식을 돕기 위한 설정 */
-  max-width: none !important; 
-}
-
-.magazine-canvas {
-  margin: 0 auto;@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  color-scheme: light !important;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  font-family: 'Pretendard', sans-serif !important;
-}
-
-/* 1. 기본 레이아웃 고정: 화면이 위로 쏠리는 것을 방지 */
-html, body, #__next {
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #ffffff;
-}
-
-/* 2. 잡지 엔진 강제 확장: 아래쪽 흰 여백을 없애는 핵심 코드 */
-.stf__parent, .stf__block, .magazine-canvas {
-  height: 100vh !important; /* 픽셀 계산 오차 무시하고 화면 끝까지 확장 */
-  width: 100% !important;
-  position: relative !important;
-  display: block !important;
-}
-
-/* 3. 사장님의 정석 페이지 규격: 이미지 실종 방지 및 스크롤 지원 */
-.page-section {
-  width: 100%;
-  height: 100vh;
-  min-height: 100vh;
-  position: relative;
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto !important; /* 내용이 길어지면 내부에서 스크롤 */
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  isolation: isolate; /* 사장님의 레이어 격리 속성 유지 */
-}
-
-/* 4. 이미지 렌더링 최적화 */
-.page-section img {
-  z-index: 1 !important;
-  pointer-events: none;
-}
-
-/* 5. 타이포그래피 */
-h1 {
-  font-weight: 900;
-  font-size: 3rem;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  word-break: keep-all;
-}
-
-p {
-  font-weight: 400;
-  font-size: 1.125rem;
-  line-height: 1.75;
-  color: #333;
-}
-  display: block;
+  -webkit-user-drag: none;
+  transform: translateZ(0); /* 이미지 전용 가속 */
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 페이지 컴포넌트 임포트 (기존과 동일)
+// 컴포넌트 임포트
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -21,6 +21,7 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
           height: "100%",
           position: "relative",
           backgroundColor: "#ffffff",
+          overflow: "hidden",
         }}
       >
         {children}
@@ -37,36 +38,27 @@ export default function Magazine() {
 
   useEffect(() => {
     setMounted(true);
-
     const updateSize = () => {
-      // 🚨 [카톡 브라우저 핵심 보정]
-      // window.innerHeight 대신 VisualViewport가 있다면 그 값을 우선 사용합니다.
-      // 툴바가 생겼다 사라졌다 할 때 잡지가 같이 춤추는 걸 막습니다.
       const vh = window.visualViewport
         ? window.visualViewport.height
         : window.innerHeight;
       const vw = window.innerWidth;
-
       setSize({
         width: vw < 768 ? vw : Math.floor(vw / 2),
         height: vh,
       });
-
-      // CSS 변수를 동적으로 설정해서 globals.css에서도 이 높이를 쓰게 만듭니다.
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
     };
 
     updateSize();
     window.addEventListener("resize", updateSize);
-    if (window.visualViewport) {
+    if (window.visualViewport)
       window.visualViewport.addEventListener("resize", updateSize);
-    }
 
     return () => {
       window.removeEventListener("resize", updateSize);
-      if (window.visualViewport) {
+      if (window.visualViewport)
         window.visualViewport.removeEventListener("resize", updateSize);
-      }
     };
   }, []);
 
@@ -76,19 +68,17 @@ export default function Magazine() {
     <main
       style={{
         width: "100vw",
-        height: "calc(var(--vh, 1vh) * 100)", // 🚨 카톡 툴바 대응 높이
+        height: "calc(var(--vh, 1vh) * 100)",
         position: "fixed",
         top: 0,
         left: 0,
         backgroundColor: "#000",
-        overflow: "hidden",
       }}
     >
-      {/* Navbar: fixed로 뷰포트 상단에 박아버림 */}
       <nav
         style={{
           position: "fixed",
-          top: "30px", // 카톡 상단 바 고려해서 살짝 내림
+          top: "30px",
           right: "40px",
           zIndex: 9999,
           display: "flex",
@@ -146,10 +136,14 @@ export default function Magazine() {
           showCover={false}
           drawShadow={true}
           usePortrait={window.innerWidth < 768}
-          flippingTime={1000}
+          flippingTime={800} // 전환 속도를 살짝 높여 반짝임 인지 저하
           autoSize={true}
           startPage={0}
           className="magazine-canvas"
+          // 🚨 [반짝임 방지 핵심] 모바일 성능 최적화 옵션
+          mobileScrollSupport={false}
+          swipeDistance={30}
+          clickEventForward={true}
         >
           <Page>
             <CoverLeftPage />
