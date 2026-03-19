@@ -1,48 +1,71 @@
-/* ... 상단 스크롤바 숨기기 로직은 동일 ... */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@tailwind base; @tailwind components; @tailwind utilities;
 
-/* 🚨 데스크탑 가로 화면에서는 종이 겹침 효과를 숨기거나 꽉 채움 */
-@media (min-width: 1024px) {
-  .magazine-canvas {
-    border-radius: 0px !important; /* 풀사이즈일 때는 둥근 모서리보다 꽉 찬 느낌 */
-  }
-  .magazine-canvas::before,
-  .magazine-canvas::after {
-    display: none; /* 풀사이즈 모드에선 종이 두께 효과 제거 (화면 밖으로 나감) */
-  }
+:root { color-scheme: dark !important; }
+
+/* 🚨 1. 스크롤바(휠) 물리적 완전 삭제 및 화면 고정 */
+html, body {
+  width: 100vw;
+  height: calc(var(--vh, 1vh) * 100);
+  margin: 0; padding: 0;
+  /* 브라우저 기본 스크롤(바운스 효과 등) 원천 차단 */
+  overflow: hidden !important; 
+  background-color: #121212;
+  /* 모바일에서 새로고침 당겨지는 현상 방지 */
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
 }
 
-/* 🚨 모바일이나 작은 화면에서만 입체감 유지 */
-@media (max-width: 1023px) {
-  .magazine-canvas {
-    border-radius: 20px !important;
-    position: relative;
-  }
-  .magazine-canvas::before {
-    content: "";
-    position: absolute;
-    top: 5px; left: 5px; right: -8px; bottom: -8px;
-    background: #fdfdfd;
-    z-index: -1;
-    border-radius: 20px;
-    background-image: repeating-linear-gradient(to bottom, #e5e5e5 0px, #e5e5e5 1px, #ffffff 1px, #ffffff 3px);
-  }
+/* 모든 요소에서 스크롤바 안 보이게 처리 */
+* {
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+  box-sizing: border-box;
+  font-family: 'Pretendard', sans-serif !important;
+  /* 반짝임 방지용 GPU 가속 */
+  -webkit-font-smoothing: antialiased;
+  backface-visibility: hidden;
+}
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari */
 }
 
+/* 🚨 2. 페이지 내부 레이아웃 (내용물 가두기) */
 .page-section {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   position: relative;
   background-color: #fff;
-  display: flex; flex-direction: column;
-  /* 데스크탑 기본 패딩 */
-  padding: 8vh 5vw;
-  background: linear-gradient(to right, #f7f7f7 0%, #ffffff 4%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  /* 내용이 밖으로 나가지 못하게 절대 방어 */
+  overflow: hidden !important; 
   isolation: isolate;
+  /* 책등(중앙) 그라데이션 */
+  background: linear-gradient(to right, #f2f2f2 0%, #ffffff 4%, #ffffff 100%);
 }
 
-/* 🚨 사장님 전용 모바일 패딩 조정 (글씨 내림 / 선 올림) */
-@media (max-width: 768px) {
+/* 🚨 3. PC 풀사이즈 vs 모바일 책 질감 반응형 설정 */
+
+/* [PC/가로 모드] 풀사이즈 (여백 없음, 직각 모서리) */
+@media (min-width: 769px) {
+  .magazine-canvas {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
   .page-section {
-    padding-top: 20vh !important;
-    padding-bottom: 22vh !important;
+    padding: 8vh 4vw; /* 넉넉한 데스크탑 여백 */
+  }
+}
+
+/* [모바일/세로 모드] 진짜 책 느낌 (모서리 둥글게, 겹침 그림자) */
+@media (max-width: 768px) {
+  .magazine-canvas {
+    border-radius: 12px !important;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6) !important;
+  }
+  .page-section {
+    /* 사장님 맞춤 모바일 여백: 글 내림, 선 올림 */
+    padding: 18vh 24px 22vh; 
   }
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 컴포넌트 임포트 (Cover, Intro, Lawyer 등)
+// 컴포넌트 임포트 (사장님 폴더 구조에 맞게 유지)
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -11,6 +11,7 @@ import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
+// 🚨 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
 const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
     <div
@@ -18,10 +19,8 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: "#121212", // 🚨 배경색 통일
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: "#fff",
+        overflow: "hidden",
       }}
     >
       {children}
@@ -38,27 +37,30 @@ export default function Magazine() {
   useEffect(() => {
     setMounted(true);
     const updateSize = () => {
+      // 카톡 브라우저 상하단 바를 제외한 '진짜' 가시 영역 높이
       const vh = window.visualViewport
         ? window.visualViewport.height
         : window.innerHeight;
       const vw = window.innerWidth;
-      const isLandscape = vw > vh;
 
-      if (isLandscape) {
-        // 데스크탑/가로모드: 화면 높이의 90%만 사용하여 바닥과의 입체감 조성
-        const targetHeight = vh * 0.9;
-        const targetWidth = Math.floor(targetHeight * 0.72);
-        setSize({ width: targetWidth, height: targetHeight });
+      const isDesktop = vw > 768 && vw > vh;
+
+      if (isDesktop) {
+        // 🚨 데스크탑: 100% 꽉 채우기 (양면이니까 width는 반갈죽)
+        setSize({ width: Math.floor(vw / 2), height: vh });
       } else {
+        // 🚨 모바일: 100% 꽉 채우기 (단면)
         setSize({ width: vw, height: vh });
       }
+
+      // CSS에서 쓸 진짜 vh 변수 전달
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
     };
 
     updateSize();
     window.addEventListener("resize", updateSize);
     window.addEventListener("orientationchange", () =>
-      setTimeout(updateSize, 400),
+      setTimeout(updateSize, 300),
     );
 
     return () => {
@@ -77,13 +79,13 @@ export default function Magazine() {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "#121212", // 🚨 딥 그레이 배경
+        backgroundColor: "#121212",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        overflow: "hidden", // 🚨 메인 컨테이너 휠 방지
       }}
     >
+      {/* 🚨 네비게이션: 클릭 이벤트를 뺏기지 않도록 확실한 위치 고정 */}
       <nav
         style={{
           position: "fixed",
@@ -135,13 +137,19 @@ export default function Magazine() {
         maxHeight={size.height}
         showCover={false}
         drawShadow={true}
+        usePortrait={
+          window.innerWidth <= 768 || window.innerWidth <= window.innerHeight
+        }
         flippingTime={600}
-        usePortrait={window.innerWidth < window.innerHeight}
         autoSize={true}
         startPage={0}
-        className="magazine-canvas" // 🚨 CSS에서 정의한 곡률 적용됨
+        className="magazine-canvas"
         maxShadowOpacity={0.4}
+        /* 🚨 터치 넘기기 부활 핵심 옵션 */
         mobileScrollSupport={true}
+        clickEventForward={true}
+        useMouseEvents={true}
+        swipeDistance={30}
       >
         <Page>
           <CoverLeftPage />
