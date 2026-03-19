@@ -1,8 +1,21 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
-@tailwind base; @tailwind components; @tailwind utilities;
+/* app/globals.css 전체 소스 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root { color-scheme: light !important; }
-* { box-sizing: border-box; padding: 0; margin: 0; font-family: 'Pretendard', sans-serif !important; }
+
+/* 🚨 [텍스트 반짝임 방지] 폰트 로딩 전까지 글자를 숨기지 않고 바로 보여줌 */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: 'Pretendard', -apple-system, sans-serif !important;
+  font-display: block !important; /* 폰트가 올 때까지 기다리지 않고 즉시 렌더링 */
+  -webkit-font-smoothing: antialiased;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
 
 html, body {
   width: 100vw;
@@ -11,13 +24,11 @@ html, body {
   background-color: #000;
 }
 
-/* 🚨 [텍스트 반짝임 방지] 자바스크립트 로드 전에도 텍스트가 보이게 강제 */
-.page-section * {
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  -webkit-font-smoothing: antialiased;
-  /* 텍스트가 늦게 뜨는 현상을 방지하기 위해 투명도 미리 100% 고정 */
-  opacity: 1 !important; 
+.magazine-canvas, .stf__parent, .stf__block {
+  height: 100% !important;
+  width: 100% !important;
+  /* 🚨 페이지 전환 시 텍스트 찌그러짐 방지 */
+  will-change: transform;
 }
 
 .page-section {
@@ -27,43 +38,29 @@ html, body {
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  /* 🚨 [모바일 위치 조절] 10vh(위), 15vh(아래) 여백으로 글 내리고 선 올림 */
-  padding: 10vh 24px 15vh; 
+  /* 🚨 [위치 조절] 모바일에서 글 내리고 선 올리는 기본 여백 */
+  padding: 12vh 30px 18vh; 
   isolation: isolate;
 }
 
-/* 🚨 [사장님 요청] 모바일 전용 텍스트/선 위치 대폭 수정 */
+/* 🚨 [사장님 요청] 모바일/카톡 브라우저 대응 가로세로 배치 */
 @media (max-width: 768px) {
   .page-section {
-    padding-top: 18vh;    /* 🚨 글씨를 더 아래로 내림 (약 20% 지점) */
-    padding-bottom: 20vh; /* 🚨 맨 아래 선을 대폭 위로 올림 */
+    padding-top: 20vh !important;    /* 🚨 글씨를 화면 20% 지점까지 내림 */
+    padding-bottom: 22vh !important; /* 🚨 하단 선을 화면 22% 지점까지 올림 */
   }
   
   h1 {
-    font-size: 2rem !important;
-    line-height: 1.3;
-    margin-bottom: 1.5rem;
-    /* 🚨 텍스트가 찌그러지지 않게 높이값 보호 */
-    min-height: 2.6rem; 
-  }
-
-  p {
-    font-size: 1rem !important;
-    line-height: 1.6;
+    font-size: 1.8rem !important; /* 텍스트가 너무 크면 반짝임이 심해 보이므로 적정 크기 조절 */
+    line-height: 1.4;
+    word-break: keep-all;
   }
 }
 
-/* 가로 모드일 때 텍스트 겹침 방지 */
-@media (orientation: landscape) and (max-height: 600px) {
+/* 가로 모드일 때 (폰 돌렸을 때) 텍스트가 겹치지 않게 조절 */
+@media (orientation: landscape) {
   .page-section {
-    padding: 5vh 30px;
-    justify-content: center;
+    padding-top: 10vh !important;
+    padding-bottom: 12vh !important;
   }
-  h1 { font-size: 1.4rem !important; margin-bottom: 0.5rem; }
-}
-
-.stf__parent, .stf__block, .magazine-canvas {
-  height: 100% !important;
-  width: 100% !important;
-  transform: translateZ(0);
 }

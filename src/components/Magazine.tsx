@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 정적 로드
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -20,6 +19,7 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
         height: "100%",
         position: "relative",
         backgroundColor: "#fff",
+        overflow: "hidden",
       }}
     >
       {children}
@@ -41,7 +41,7 @@ export default function Magazine() {
         : window.innerHeight;
       const vw = window.innerWidth;
 
-      // 가로 모드면 한 쪽당 너비를 절반으로, 세로면 전체로
+      // 🚨 가로 모드면 양면, 세로 모드면 단면으로 즉시 계산
       const isLandscape = vw > vh;
       setSize({
         width: isLandscape ? Math.floor(vw / 2) : vw,
@@ -52,7 +52,6 @@ export default function Magazine() {
 
     updateSize();
     window.addEventListener("resize", updateSize);
-    // 가로 모드 전환 대응 강화
     window.addEventListener("orientationchange", () =>
       setTimeout(updateSize, 300),
     );
@@ -76,7 +75,6 @@ export default function Magazine() {
         backgroundColor: "#000",
       }}
     >
-      {/* Navbar - 텍스트보다 위에 있게 zIndex 상향 */}
       <nav
         style={{
           position: "fixed",
@@ -138,7 +136,7 @@ export default function Magazine() {
           showCover={false}
           drawShadow={true}
           usePortrait={window.innerWidth < window.innerHeight}
-          flippingTime={600}
+          flippingTime={500} // 🚨 전환을 더 빠르게 해서 반짝임 인지 차단
           autoSize={true}
           startPage={0}
           className="magazine-canvas"

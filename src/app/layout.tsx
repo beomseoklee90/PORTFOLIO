@@ -1,14 +1,5 @@
-// layout.tsx
-import React from "react";
+// app/layout.tsx 전체 소스
 import "./globals.css";
-
-// layout.tsx 상단에 추가
-export const viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false, // 화면 축소/확대 시 발생하는 렌더링 오류 방지
-};
 
 export default function RootLayout({
   children,
@@ -16,8 +7,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" suppressHydrationWarning>
-      <body style={{ backgroundColor: "#ffffff", overscrollBehavior: "none" }}>
+    <html lang="ko">
+      <head>
+        {/* 🚨 [반짝임 해결 핵심] 폰트를 넥스트 방식이 아닌, 가장 빠른 방식으로 직접 호출 */}
+        <link
+          rel="stylesheet"
+          as="style"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+        />
+      </head>
+      <body style={{ margin: 0, padding: 0, backgroundColor: "#000" }}>
         {children}
       </body>
     </html>
