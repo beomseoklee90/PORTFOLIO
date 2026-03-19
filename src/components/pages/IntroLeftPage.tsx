@@ -39,7 +39,7 @@ export default function IntroLeftPage() {
              Next.js Image 대신 일반 img를 쓸 때도 스타일로 격리 
           */
           <img
-            src="/images/intro_visual.png"
+            src="/images/intro_visual.webp"
             alt="Philosophy Visual Mobile"
             style={{
               width: "100%",
@@ -54,7 +54,7 @@ export default function IntroLeftPage() {
           /* PC용 최적화 */
           <div style={{ position: "relative", width: "100%", height: "100%" }}>
             <Image
-              src="/images/intro_visual.png"
+              src="/images/intro_visual.webp"
               alt="Philosophy Visual PC"
               fill
               style={{

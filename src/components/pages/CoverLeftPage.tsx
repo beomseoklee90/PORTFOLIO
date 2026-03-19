@@ -34,7 +34,7 @@ export default function CoverLeftPage() {
         }}
       >
         <Image
-          src="/images/main_visual.png"
+          src="/images/main_visual.webp"
           alt="Main Visual"
           fill
           style={{

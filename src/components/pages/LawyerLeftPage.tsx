@@ -39,7 +39,7 @@ export default function LawyerLeftPage() {
         {isMobile ? (
           /* 모바일 최적화: 레이아웃 시프트 방지를 위해 WebkitBackfaceVisibility 추가 */
           <img
-            src="/images/lawyer_visual.png"
+            src="/images/lawyer_visual.webp"
             alt="Lawyer Visual Mobile"
             style={{
               width: "100%",
@@ -53,7 +53,7 @@ export default function LawyerLeftPage() {
           /* PC 최적화: Next.js Image로 고화질 처리 */
           <div style={{ position: "relative", width: "100%", height: "100%" }}>
             <Image
-              src="/images/lawyer_visual.png"
+              src="/images/lawyer_visual.webp"
               alt="Lawyer Visual PC"
               fill
               style={{

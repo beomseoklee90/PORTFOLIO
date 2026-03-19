@@ -18,7 +18,7 @@ export default function LawyerLeftPage() {
     >
       <div className="w-full h-full relative" style={{ isolation: "isolate" }}>
         <Image
-          src="/images/lawyer_visual.png"
+          src="/images/lawyer_visual.webp"
           alt="Premium Lawyer Branding Concept"
           fill
           style={{ objectFit: "cover" }}
