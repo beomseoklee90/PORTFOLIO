@@ -186,6 +186,8 @@ export default function Magazine() {
         className="magazine-canvas"
         clickEventForward={true}
         useMouseEvents={true}
+        /* 🚨 브라우저가 렌더링을 미리 준비하도록 하는 스타일 주입 */
+        style={{ transform: "translateZ(0)" }}
       >
         <Page>
           <CoverLeftPage />

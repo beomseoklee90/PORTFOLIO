@@ -171,3 +171,24 @@ img {
   color: #666;
   word-break: keep-all;
 }
+
+/* globals.css */
+
+/* react-pageflip이 생성하는 모든 페이지 컨테이너에 적용 */
+.stf__item {
+  /* 🚨 "안 보여도 미리 그려라" - 브라우저에게 주는 강력한 힌트 */
+  contain: paint layout; 
+  
+  /* 🚨 GPU 가속 레이어 생성: 넘길 때 새로 그리지 않고 메모리에서 꺼내 쓰게 함 */
+  transform: translateZ(0);
+  will-change: transform;
+  
+  /* 배경색을 흰색으로 강제해서 반짝임을 최소화 */
+  background-color: #ffffff !important;
+}
+
+/* 이미지 태그 자체에도 가속 부여 */
+.stf__item img {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
