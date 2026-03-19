@@ -24,7 +24,7 @@ export default function CoverPage() {
           alt="Architect Visual"
           fill
           className="object-cover grayscale"
-          priority
+          priority={true}
           unoptimized={true} // 처리 부하 감소
         />
 

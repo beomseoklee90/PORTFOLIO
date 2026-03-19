@@ -27,7 +27,7 @@ export default function IntroLeftPage() {
             transform: "translateZ(0)",
             WebkitBackfaceVisibility: "hidden",
           }}
-          priority // 🚨 다음 페이지 미리 로딩 (반짝임 방지 핵심)
+          priority={true} // 🚨 다음 페이지 미리 로딩 (반짝임 방지 핵심)
           unoptimized={true}
         />
       </div>

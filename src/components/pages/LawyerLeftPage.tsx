@@ -64,7 +64,7 @@ export default function LawyerLeftPage() {
                 filter: "grayscale(100%) contrast(1.1)",
               }}
               unoptimized
-              priority
+              priority={true}
             />
           </div>
         )}

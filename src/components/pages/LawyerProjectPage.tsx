@@ -26,7 +26,7 @@ export default function LawyerLeftPage() {
           fill
           style={{ objectFit: "cover" }}
           sizes="50vw"
-          priority
+          priority={true}
           unoptimized={true} // 렌더링 부하 감소
         />
 

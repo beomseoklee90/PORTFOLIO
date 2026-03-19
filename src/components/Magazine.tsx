@@ -177,12 +177,12 @@ export default function Magazine() {
         usePortrait={
           window.innerWidth <= 768 || window.innerWidth <= window.innerHeight
         }
-        flippingTime={600}
+        flippingTime={400}
         autoSize={true}
         startPage={0}
         className="magazine-canvas"
-        maxShadowOpacity={0.4}
-        mobileScrollSupport={true}
+        maxShadowOpacity={0}
+        mobileScrollSupport={false}
         clickEventForward={true}
         useMouseEvents={true}
         swipeDistance={30}

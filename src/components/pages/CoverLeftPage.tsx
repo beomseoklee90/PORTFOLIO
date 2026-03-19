@@ -29,7 +29,7 @@ export default function CoverLeftPage() {
             transform: "translateZ(0)",
             WebkitBackfaceVisibility: "hidden",
           }}
-          priority // 🚨 다음 페이지 넘길 때 하얗게 뜨는 현상 방지 (미리 로드)
+          priority={true} // 🚨 다음 페이지 넘길 때 하얗게 뜨는 현상 방지 (미리 로드)
           unoptimized={true}
         />
 
