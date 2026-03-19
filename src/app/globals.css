@@ -98,3 +98,26 @@ main, body {
   transition: none !important;
   animation: none !important;
 }
+
+/* 1. 글자 렌더링 시 브라우저가 똑똑한 척 못하게 막기 */
+* {
+  /* 글자 간격이나 자간 계산을 아주 단순하게 만듭니다 */
+  text-rendering: optimizeSpeed !important;
+  /* 브라우저 자체의 부드러운 글꼴 효과를 끕니다 (깨짐 방지 핵심) */
+  -webkit-font-smoothing: auto !important;
+  /* 레이아웃이 겹치지 않게 강제 격리 */
+  isolation: isolate;
+}
+
+/* 2. 텍스트 블록이 쪼개지는 현상 방지 */
+p, h1, h2, h3, span {
+  /* 한 줄이 너무 길어지면 브라우저가 쪼개서 그리려 하니 이걸 막습니다 */
+  overflow-wrap: break-word;
+  word-break: keep-all; /* 한글 단어 단위로 예쁘게 끊기 */
+  display: inline-block; /* 텍스트를 하나의 '박스'로 묶어 렌더링 안정성 확보 */
+  width: 100%;
+}
+
+/* 3. 폰트 로딩 방식 변경 (중요) */
+/* layout.tsx나 globals.css의 폰트 호출 부분에 'display=swap'이 있는지 확인하세요. 
+   없다면 아래처럼 폰트 로딩 시 깜빡임을 허용해서 렌더링 부하를 분산시킵니다. */
