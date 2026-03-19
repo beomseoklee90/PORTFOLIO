@@ -13,28 +13,31 @@ export default function IntroLeftPage() {
   }, []);
 
   return (
-    <div
+    <section
+      className="page-section"
       style={{
-        width: "100%",
-        height: "100%",
         backgroundColor: "#ffffff",
+        /* 모바일은 이미지가 꽉 차게, PC는 여백을 주어 고급스럽게 */
         padding: isMobile ? "0" : "100px 120px",
-        boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center", // PC에서 중앙 정렬
+        justifyContent: "center",
       }}
     >
       <div
         style={{
           position: "relative",
           width: "100%",
-          height: isMobile ? "auto" : "100%", // 모바일은 높이 자동
+          /* PC에서는 전체 높이를 쓰고, 모바일에서는 이미지 비율에 맞춤 */
+          height: isMobile ? "auto" : "100%",
           overflow: "hidden",
+          isolation: "isolate", // 레이어 엉킴 방지
         }}
       >
         {isMobile ? (
-          /* --- 모바일용: 가로 꽉 채우고 높이 자동 (찌그러짐 방지) --- */
+          /* 모바일용 최적화: 
+             Next.js Image 대신 일반 img를 쓸 때도 스타일로 격리 
+          */
           <img
             src="/images/intro_visual.png"
             alt="Philosophy Visual Mobile"
@@ -43,36 +46,42 @@ export default function IntroLeftPage() {
               height: "auto",
               display: "block",
               filter: "grayscale(100%)",
+              /* 렌더링 시 타일 깨짐 방지 */
+              WebkitBackfaceVisibility: "hidden",
             }}
           />
         ) : (
-          /* --- PC용: 기존 fill 방식 --- */
+          /* PC용 최적화 */
           <div style={{ position: "relative", width: "100%", height: "100%" }}>
             <Image
               src="/images/intro_visual.png"
               alt="Philosophy Visual PC"
               fill
-              style={{ objectFit: "cover", filter: "grayscale(100%)" }}
+              style={{
+                objectFit: "cover",
+                filter: "grayscale(100%)",
+              }}
               unoptimized
+              priority
             />
           </div>
         )}
       </div>
 
+      {/* 캡션: PC에서만 노출되도록 설정 유지 및 category 스타일 적용 */}
       {!isMobile && (
         <div
+          className="category"
           style={{
             paddingTop: "20px",
             fontSize: "11px",
-            fontFamily: "sans-serif",
-            letterSpacing: "0.2em",
             color: "#999",
-            textTransform: "uppercase",
+            letterSpacing: "0.2em",
           }}
         >
           Portfolio Concept 01 / Philosophy
         </div>
       )}
-    </div>
+    </section>
   );
 }

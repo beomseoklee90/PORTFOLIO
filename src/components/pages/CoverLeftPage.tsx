@@ -13,15 +13,15 @@ export default function CoverLeftPage() {
   }, []);
 
   return (
-    <div
+    /* 1. section 태그와 page-section 클래스를 사용하여 globals.css의 격리 속성 적용
+      2. 인라인 스타일을 최소화하고 구조적 안정성 확보
+    */
+    <section
+      className="page-section"
       style={{
-        width: "100%",
-        height: "100%",
+        padding: 0,
+        backgroundColor: "#ffffff",
         position: "relative",
-        backgroundColor: "#ffffff", // 잘리는 부분은 차라리 깔끔하게 흰색으로
-        display: "flex",
-        alignItems: "center", // 세로 중앙 정렬
-        justifyContent: "center",
       }}
     >
       <div
@@ -29,8 +29,8 @@ export default function CoverLeftPage() {
           width: "100%",
           height: "100%",
           position: "relative",
-          // 모바일일 때만 이미지가 찌그러지지 않도록 cover 처리
-          // 만약 사진 전체가 다 나와야 하면 'contain'으로 바꾸세요
+          /* 이미지 렌더링 시 타일 분할 현상을 방지하기 위한 레이어 격리 */
+          isolation: "isolate",
         }}
       >
         <Image
@@ -38,13 +38,20 @@ export default function CoverLeftPage() {
           alt="Main Visual"
           fill
           style={{
-            objectFit: isMobile ? "cover" : "cover", // cover는 꽉 채우고, contain은 전체 다 보여줌
+            /* 이미지는 cover로 꽉 채우되, 
+               혹시라도 브라우저가 이미지를 쪼개지 못하도록 설정 
+            */
+            objectFit: "cover",
             objectPosition: "center center",
           }}
-          priority
-          unoptimized={true}
+          priority // 첫 페이지이므로 최우선 로딩
+          unoptimized={true} // 원본 화질 유지 및 처리 부하 감소
         />
+
+        {/* 이미지 위에 텍스트를 얹고 싶으시다면 
+          여기에 <h1>이나 <span>을 추가하면 됩니다. 
+        */}
       </div>
-    </div>
+    </section>
   );
 }

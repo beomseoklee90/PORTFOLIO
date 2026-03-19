@@ -1,45 +1,103 @@
-/* 1. 폰트 로딩 최적화 (가장 가벼운 방식) */
+/* 1. 폰트 로딩 (최상단 고정) */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
 
+/* 2. Tailwind 기본 설정 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 2. 카톡 브라우저의 뇌정지를 막는 '단순화' 설정 */
+/* 3. 시스템 및 브라우저 최적화 (깜빡임 & 깨짐 방지) */
+:root {
+  color-scheme: light !important;
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
 * {
-  /* [핵심] 모든 가속과 변형을 끕니다. 쪼개지는 원흉입니다. */
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  /* [핵심] 3D 가속을 끄고 2D 레이어만 사용하여 4분할 깨짐 방지 */
   transform: none !important;
   -webkit-transform: none !important;
   transition: none !important;
-  animation: none !important;
-  
-  /* [핵심] 텍스트가 쪼개지지 않게 '한 덩어리'로 인식하게 합니다. */
-  -webkit-transform-style: flat !important;
-  transform-style: flat !important;
+  /* 폰트 강제 적용 */
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
+  text-rendering: optimizeSpeed !important;
 }
 
+/* 4. 잡지 페이지 넘기기 (Scroll Snap) 설정 */
 html, body {
-  /* 배경색을 시스템 레벨에서 고정 (깜빡임 방지) */
-  background: #ffffff !important;
-  /* 스크롤 시 화면 쪼개짐 방지 */
   height: 100%;
-  position: relative;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: auto; /* 부드러운 스크롤이 오히려 독이 될 때가 있습니다 */
+  background-color: #ffffff !important;
+  color: #000000;
+  /* [핵심] 물 흐르듯 넘어가는 부드러운 스크롤을 끄고 '탁-탁-' 끊기게 설정 */
+  scroll-behavior: auto !important;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* 3. 잡지 스타일 고딕은 유지하되, 레이아웃만 안정화 */
+/* 각 페이지 섹션을 '잡지 한 페이지'로 인식하게 만듦 */
+section, .page-section {
+  height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  /* 텍스트가 쪼개지지 않도록 박스 격리 */
+  contain: content;
+  overflow: hidden;
+}
+
+/* 5. 매거진 타이포그래피 디자인 (강약 조절) */
+
+/* 메인 헤드라인: 묵직하고 단단한 고딕 */
 h1 {
-  font-family: 'Pretendard', sans-serif !important;
   font-weight: 900;
-  font-size: 3rem;
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
   letter-spacing: -0.05em;
-  /* 텍스트 렌더링 부하 감소 */
-  text-rendering: optimizeSpeed;
+  line-height: 1.05;
+  margin-bottom: 2rem;
+  word-break: keep-all;
+  /* 텍스트를 하나의 블록으로 묶어 렌더링 오류 방지 */
+  display: block;
 }
 
+/* 부제목/카테고리: 아주 가늘고 세련된 느낌 */
+.category {
+  display: block;
+  font-weight: 200; /* 최대한 가늘게 */
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* 본문: 가독성 중심의 깔끔한 고딕 */
 p {
-  font-family: 'Pretendard', sans-serif !important;
   font-weight: 400;
-  line-height: 1.6;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #333;
+  max-width: 600px;
+}
+
+/* 포인트 강조: 필요한 단어만 굵게 */
+strong, b {
+  font-weight: 700;
+  color: #000;
+}
+
+/* 6. 페이지 진입 애니메이션 (은은한 페이드인) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+main {
+  animation: fadeIn 0.5s ease-in forwards;
 }

@@ -21,14 +21,13 @@ export default function Magazine() {
   useEffect(() => {
     const updateDimensions = () => {
       const isMobile = window.innerWidth < 768;
-      const isLandscape = window.innerWidth > window.innerHeight; // 가로가 더 긴지 확인
+      const isLandscape = window.innerWidth > window.innerHeight;
 
       setDimensions({
-        // 모바일이더라도 가로로 돌리면(Landscape) 다시 두 페이지(width / 2)로 보여줌
         width:
           isMobile && !isLandscape ? window.innerWidth : window.innerWidth / 2,
         height: window.innerHeight,
-        isMobile: isMobile && !isLandscape, // 세로 모드일 때만 '모바일 1페이지 모드' 작동
+        isMobile: isMobile && !isLandscape,
       });
     };
 
@@ -37,31 +36,23 @@ export default function Magazine() {
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      const isMobile = window.innerWidth < 768;
-      setDimensions({
-        // 모바일은 전체 가로, PC는 절반
-        width: isMobile ? window.innerWidth : window.innerWidth / 2,
-        height: window.innerHeight,
-        isMobile: isMobile,
-      });
-    };
-
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
-
-  // 초기 렌더링 에러 방지
   if (dimensions.width === 0) return null;
 
-  // 네비게이션 함수
   const goToPage = (pageIndex: number) => {
     if (bookRef.current) {
       // @ts-ignore
       bookRef.current.pageFlip().flip(pageIndex);
     }
+  };
+
+  // 공통 페이지 스타일 (깨짐 방지용)
+  const pageWrapperStyle: React.CSSProperties = {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#ffffff",
+    contain: "content", // 4분할 깨짐 방지 핵심
+    overflow: "hidden",
+    display: "block",
   };
 
   return (
@@ -74,7 +65,7 @@ export default function Magazine() {
         overflow: "hidden",
       }}
     >
-      {/* 우측 상단 Navbar */}
+      {/* Navbar - 폰트 스타일 적용 */}
       <nav
         style={{
           position: "absolute",
@@ -83,23 +74,22 @@ export default function Magazine() {
           zIndex: 9999,
           display: "flex",
           gap: dimensions.isMobile ? "1.5rem" : "4rem",
-          fontSize: dimensions.isMobile ? "16px" : "20px",
-          fontWeight: "bold",
-          fontFamily: '"Cormorant Garamond", serif',
+          fontSize: dimensions.isMobile ? "16px" : "18px",
+          fontWeight: "700",
+          fontFamily: "var(--font-sans)", // 우리가 설정한 고딕 적용
           letterSpacing: "0.1em",
           color: "#000000",
         }}
       >
-        <span style={{ cursor: "pointer" }} onClick={() => goToPage(3)}>
+        <span style={{ cursor: "pointer" }} onClick={() => goToPage(2)}>
           ABOUT
         </span>
-        <span style={{ cursor: "pointer" }} onClick={() => goToPage(5)}>
+        <span style={{ cursor: "pointer" }} onClick={() => goToPage(4)}>
           WORKS
         </span>
         <span style={{ cursor: "pointer", color: "#ccc" }}>CONTACT</span>
       </nav>
 
-      {/* 잡지 본체 컨테이너 */}
       <div
         style={{
           width: "100%",
@@ -120,39 +110,33 @@ export default function Magazine() {
           minHeight={dimensions.height}
           maxHeight={dimensions.height}
           usePortrait={dimensions.isMobile}
-          // startPortrait={dimensions.isMobile}
-          showCover={dimensions.isMobile}
+          showCover={true} // 표지가 하나씩 나오게 설정
           flippingTime={800}
-          // --- 모바일 터치 및 인터랙션 강화 ---
-          clickEventForward={true} // 자식 컴포넌트 클릭 이벤트 허용
-          useMouseEvents={true} // 데스크탑 마우스 클릭 허용
-          swipeDistance={20} // 모바일 스와이프 민감도 (작을수록 예민)
-          showPageCorners={false} // 모서리 효과 제거 (터치 방해 방지)
-          disableFlipByClick={false} // 클릭으로 넘기기 활성화
-          mobileScrollSupport={true} // 모바일 터치 스크롤 지원
-          style={{ boxShadow: "0 0 20px rgba(0,0,0,0.1)" }}
+          clickEventForward={true}
+          useMouseEvents={true}
+          swipeDistance={30}
+          showPageCorners={false}
+          disableFlipByClick={false}
+          mobileScrollSupport={true}
+          className="magazine-book"
         >
-          {/* 0, 1페이지: 표지 (Cover) */}
-          <div style={{ width: "100%", height: "100%" }}>
+          {/* 각 페이지를 wrapper로 감싸서 깨짐 방지 */}
+          <div style={pageWrapperStyle}>
             <CoverLeftPage />
           </div>
-          <div style={{ width: "100%", height: "100%" }}>
+          <div style={pageWrapperStyle}>
             <CoverRightPage />
           </div>
-
-          {/* 2, 3페이지: 철학 (ABOUT) */}
-          <div style={{ width: "100%", height: "100%" }}>
+          <div style={pageWrapperStyle}>
             <IntroLeftPage />
           </div>
-          <div style={{ width: "100%", height: "100%" }}>
+          <div style={pageWrapperStyle}>
             <IntroRightPage />
           </div>
-
-          {/* 4, 5페이지: 포트폴리오 (WORKS) */}
-          <div style={{ width: "100%", height: "100%" }}>
+          <div style={pageWrapperStyle}>
             <LawyerLeftPage />
           </div>
-          <div style={{ width: "100%", height: "100%" }}>
+          <div style={pageWrapperStyle}>
             <LawyerRightPage />
           </div>
         </HTMLFlipBook>
