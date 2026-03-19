@@ -3,77 +3,96 @@
 
 :root { color-scheme: light !important; }
 
-/* 🚨 1. 스크롤바(휠 바디) 물리적 박멸 및 화면 고정 */
-html, body {
-  width: 100vw;
-  height: calc(var(--vh, 1vh) * 100);
-  margin: 0; padding: 0;
-  /* 🚨 전체 화면 스크롤은 차단하되 내부 스크롤 허용 */
-  overflow: hidden !important; 
-  /* 🚨 [사장님 요청 1] 검은색 영역 삭제 - 딥 그레이(#121212) -> 화이트(#ffffff) */
-  background-color: #ffffff; 
-}
-
-/* 모든 요소에서 스크롤바 투명화 */
+/* =========================================
+   1. 기본 설정 & 반짝임(Flickering) 방지 코어
+========================================= */
 * {
-  box-sizing: border-box !important; /* 패딩이 너비를 키우지 않도록 고정 */
-  -ms-overflow-style: none; /* IE, Edge */
-  scrollbar-width: none; /* Firefox */
+  box-sizing: border-box !important; /* 패딩 오차 방지 */
+  -ms-overflow-style: none; /* IE, Edge 스크롤바 숨김 */
+  scrollbar-width: none; /* Firefox 스크롤바 숨김 */
   font-family: 'Pretendard', sans-serif !important;
-  /* 🚨 [복구] 하드웨어 가속 (반짝임 방지) */
+  
+  /* 🚨 반짝임 방지 하드웨어 가속 */
   -webkit-font-smoothing: antialiased;
   backface-visibility: hidden;
   transform-style: preserve-3d;
 }
 *::-webkit-scrollbar {
-  display: none !important; /* Chrome, Safari */
+  display: none !important; /* Chrome, Safari, 카톡 휠 박멸 */
 }
 
-/* 🚨 2. 페이지 내부 레이아웃 (내용물 스크롤 허용 및 고정) */
+/* 전체 화면 틀 고정 (흰색 배경 통일) */
+html, body {
+  width: 100%; 
+  height: calc(var(--vh, 1vh) * 100);
+  margin: 0; padding: 0;
+  overflow: hidden !important; /* 전체 화면 스크롤 절대 불가 */
+  background-color: #ffffff; /* 검은 빈 공간 완전 삭제 */
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
+}
+
+
+/* =========================================
+   2. 잡지 페이지 내부 레이아웃 (내용물 가두기)
+========================================= */
 .page-section {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   position: relative;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   
-  /* 🚨 [복구] 내용이 길면 안에서 '부드럽게' 스크롤 되도록 변경 */
-  overflow-y: auto !important; 
-  overflow-x: hidden !important; 
-  
+  overflow-y: auto !important; /* 내용 길면 세로 스크롤 허용 */
+  overflow-x: hidden !important; /* 가로로 터져나가는 것 원천 봉쇄 */
   isolation: isolate;
-  /* 책등(중앙) 그라데이션 */
   background: linear-gradient(to right, #f2f2f2 0%, #ffffff 4%, #ffffff 100%);
-  contain: paint; /* 🚨 반짝임 방지 가속 */
+  
+  /* 🚨 페이지 렌더링 격리 및 하드웨어 가속 (반짝임 방지) */
+  contain: paint;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
-/* 🚨 [사장님 요청 2] 이미지 라운딩 컨테이너 정의 */
+/* 이미지 라운딩 전용 컨테이너 */
 .magazine-image-container {
   position: relative;
   width: 100%;
+  max-width: 100%;
   height: auto;
   overflow: hidden;
-  /* 🚨 사진 테두리 둥글게 */
-  border-radius: 12px; 
+  border-radius: 12px; /* 사진 모서리 둥글게 */
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   background-color: #fff;
 }
 
-/* 🚨 3. PC 풀사이즈 vs 모바일 책 질감 반응형 설정 */
+/* 이미지 자체 렌더링 최적화 (깜빡임 차단) */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  object-fit: cover;
+  transform: translateZ(0); 
+  backface-visibility: hidden;
+}
 
-/* [PC/가로 모드] [복구] 풀사이즈 (여백 없음, 직각 모서리) */
+
+/* =========================================
+   3. PC / 데스크탑 (풀사이즈)
+========================================= */
 @media (min-width: 769px) {
   .magazine-canvas {
     border-radius: 0 !important;
     box-shadow: none !important;
   }
   .page-section {
-    padding: 8vh 4vw; /* 넉넉한 데스크탑 여백 */
+    padding: 8vh 4vw; /* 데스크탑 전용 넉넉한 여백 */
   }
 }
 
-/* 🚨 여기서부터 복사해서 기존 모바일 미디어 쿼리를 덮어씌우세요 */
+
+/* =========================================
+   4. 모바일 / 세로 모드 (정통 매거진 스타일)
+========================================= */
 @media (max-width: 768px) {
   .magazine-canvas {
     border-radius: 12px !important;
@@ -81,32 +100,28 @@ html, body {
   }
   
   .page-section {
-    /* 🚨 1. 상단 여백 대폭 추가 (110px) : Navbar와 머리 부딪힘 방지 */
-    /* 🚨 2. 좌우 여백 (24px) : 매거진스러운 깔끔한 라인 */
+    /* Navbar 간섭 피하기 (Top 110px) 및 세련된 좌우 여백 (24px) */
     padding: 110px 24px 80px !important; 
-    
-    /* 🚨 3. 요소를 위에서부터 차곡차곡, 왼쪽으로 밀착 */
-    justify-content: flex-start !important; /* 수직 최상단부터 시작 */
-    align-items: flex-start !important;     /* 수평 왼쪽 끝으로 밀착 */
+    justify-content: flex-start !important; /* 위에서부터 차례대로 */
+    align-items: flex-start !important; /* 왼쪽으로 딱 붙임 */
   }
 
-  /* 🚨 4. 모든 텍스트 완벽 '왼쪽 정렬' 강제 */
+  /* 🚨 모든 텍스트 완벽 '왼쪽 정렬' 및 글씨 넘침 차단 */
   .page-section h1, .page-section p, .page-section div {
     width: 100% !important;
     max-width: 100% !important;
-    text-align: left !important; /* 중앙 -> 왼쪽으로 변경 */
+    text-align: left !important; /* 정중앙 탈피 -> 좌측 정렬 */
     
-    /* 글씨 오른쪽 넘침 방지 안전장치 유지 */
-    word-break: break-word !important; 
+    word-break: break-word !important; /* 글자 넘침 방지 */
     overflow-wrap: anywhere !important; 
     white-space: normal !important;
   }
 
-  /* 모바일 잡지 타이포그래피 정돈 */
+  /* 모바일 잡지 타이포그래피 */
   .page-section h1 {
-    font-size: 1.8rem !important; /* 제목을 살짝 더 키워서 잡지 포스 강조 */
+    font-size: 1.8rem !important; 
     line-height: 1.2;
-    margin-bottom: 24px !important; /* 제목과 본문 사이 넉넉한 여백 */
+    margin-bottom: 24px !important; 
   }
   
   .page-section p {
@@ -121,16 +136,11 @@ html, body {
     margin-bottom: 24px !important;
   }
 }
-/* 🚨 여기까지 덮어씌우기 */
 
-/* [복구] 이미지 하드웨어 가속 */
-img {
-  image-rendering: -webkit-optimize-contrast;
-  object-fit: cover;
-  transform: translateZ(0); /* 🚨 필수 */
-}
 
-/* 지원하지 않는 환경용 오버레이 */
+/* =========================================
+   5. 지원하지 않는 브라우저 (카톡 등) 안내창
+========================================= */
 #unsupported-overlay {
   position: fixed;
   top: 0;
@@ -138,8 +148,8 @@ img {
   width: 100%;
   height: 100%;
   background-color: #ffffff;
-  z-index: 10000; /* 네비게이션보다 위에 */
-  display: none; /* 기본은 숨김 */
+  z-index: 10000; /* 모든 화면을 덮음 */
+  display: none; /* 기본은 숨김 상태 (React에서 제어) */
   flex-direction: column;
   justify-content: center;
   align-items: center;
