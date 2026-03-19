@@ -35,6 +35,68 @@ export default function Magazine() {
   const [mounted, setMounted] = useState(false);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const bookRef = useRef<any>(null);
+  const [isUnsupported, setIsUnsupported] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+
+    const checkSupport = () => {
+      const vw = window.innerWidth;
+      const agent = window.navigator.userAgent.toLowerCase();
+
+      // 1. 너무 작은 화면 (예: 320px 이하 구형 폰)
+      // 2. 인터넷 익스플로러 등 구형 브라우저 체크
+      const isIE =
+        agent.indexOf("trident") !== -1 || agent.indexOf("msie") !== -1;
+
+      if (vw < 300 || isIE) {
+        setIsUnsupported(true);
+      } else {
+        setIsUnsupported(false);
+      }
+    };
+
+    const updateSize = () => {
+      const vh = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+      const vw = window.innerWidth;
+      const isDesktop = vw > 768 && vw > vh;
+
+      if (isDesktop) {
+        setSize({ width: Math.floor(vw / 2), height: vh });
+      } else {
+        setSize({ width: vw, height: vh });
+      }
+      document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
+    };
+
+    checkSupport();
+    updateSize();
+
+    window.addEventListener("resize", () => {
+      checkSupport();
+      updateSize();
+    });
+
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  if (!mounted) return null;
+
+  // 🚨 지원하지 않는 환경일 때 보여줄 화면
+  if (isUnsupported) {
+    return (
+      <div id="unsupported-overlay" style={{ display: "flex" }}>
+        <h2>지원하지 않는 환경입니다.</h2>
+        <p>
+          본 디지털 매거진은 최신 브라우저와 <br />
+          세로 모드 환경에 최적화되어 있습니다. <br />
+          크롬(Chrome)이나 사파리(Safari) 이용을 권장합니다.
+        </p>
+      </div>
+    );
+  }
 
   useEffect(() => {
     setMounted(true);
