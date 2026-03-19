@@ -11,15 +11,14 @@ html, body {
   background-color: #000;
 }
 
-/* 🚨 [고쳐라] 반짝임 원천 차단: 레이어 강제 고정 */
+/* 🚨 반짝임(Flickering) 원천 차단 하드웨어 가속 */
 .stf__parent, .stf__block, .magazine-canvas {
   height: 100% !important;
   width: 100% !important;
   backface-visibility: hidden;
-  transform: translateZ(0); /* GPU 가속 */
+  transform: translateZ(0);
 }
 
-/* 🚨 [모바일 최적화] 글자 위치 및 하단 선 조절 */
 .page-section {
   width: 100%;
   height: 100%;
@@ -27,17 +26,34 @@ html, body {
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* 상하 균형 배치 */
-  padding: 40px 20px 60px; /* 🚨 하단 여백 확보하여 선이 안 넘치게 조절 */
+  /* 🚨 모바일 배치: 위아래 여백을 충분히 주어 글씨는 내리고 선은 올립니다 */
+  padding: 10vh 24px 12vh; 
   isolation: isolate;
 }
 
-/* 모바일 전용 글씨 위치 조정 */
+/* 🚨 [사장님 요청] 핸드폰 가로/세로 모바일 대응 */
 @media (max-width: 768px) {
   .page-section {
-    padding: 80px 20px 80px; /* 🚨 상단(글씨 내림) / 하단(선 올림) 여백 대폭 강화 */
+    padding-top: 15vh;    /* 🚨 글씨를 더 아래로 내림 */
+    padding-bottom: 15vh; /* 🚨 맨 아래 선을 더 위로 올림 */
   }
-  h1 { font-size: 2.2rem !important; margin-top: 20px; } /* 글씨를 조금 더 아래로 */
+  
+  h1 {
+    font-size: 2.2rem !important;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
 }
 
-.page-section img { z-index: 1 !important; transform: translateZ(0); }
+/* 가로 모드일 때 글자가 너무 크면 안되니 조절 */
+@media (orientation: landscape) and (max-height: 500px) {
+  h1 { font-size: 1.5rem !important; }
+  .page-section { padding: 5vh 20px; }
+}
+
+.page-section img { 
+  z-index: 1 !important; 
+  transform: translateZ(0); 
+  /* 🚨 풀 로드를 위해 모든 이미지 미리 그리기 */
+  content-visibility: auto;
+}
