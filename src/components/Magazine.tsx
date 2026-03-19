@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+
+import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// --- 페이지 컴포넌트 임포트 ---
+// 페이지 컴포넌트 임포트 (기존과 동일)
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -10,84 +11,117 @@ import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
+const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
+  ({ children }, ref) => {
+    return (
+      <div
+        ref={ref}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          backgroundColor: "#ffffff",
+        }}
+      >
+        {children}
+      </div>
+    );
+  },
+);
+Page.displayName = "Page";
+
 export default function Magazine() {
-  const [dimensions, setDimensions] = useState({
-    width: 0,
-    height: 0,
-    isMobile: false,
-  });
-  const bookRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  const bookRef = useRef<any>(null);
 
   useEffect(() => {
-    const updateDimensions = () => {
-      const isMobile = window.innerWidth < 768;
-      const isLandscape = window.innerWidth > window.innerHeight;
+    setMounted(true);
 
-      setDimensions({
-        width:
-          isMobile && !isLandscape ? window.innerWidth : window.innerWidth / 2,
-        height: window.innerHeight,
-        isMobile: isMobile && !isLandscape,
+    const updateSize = () => {
+      // 🚨 [카톡 브라우저 핵심 보정]
+      // window.innerHeight 대신 VisualViewport가 있다면 그 값을 우선 사용합니다.
+      // 툴바가 생겼다 사라졌다 할 때 잡지가 같이 춤추는 걸 막습니다.
+      const vh = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+      const vw = window.innerWidth;
+
+      setSize({
+        width: vw < 768 ? vw : Math.floor(vw / 2),
+        height: vh,
       });
+
+      // CSS 변수를 동적으로 설정해서 globals.css에서도 이 높이를 쓰게 만듭니다.
+      document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
     };
 
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", updateSize);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateSize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", updateSize);
+      }
+    };
   }, []);
 
-  if (dimensions.width === 0) return null;
-
-  const goToPage = (pageIndex: number) => {
-    if (bookRef.current) {
-      // @ts-ignore
-      bookRef.current.pageFlip().flip(pageIndex);
-    }
-  };
-
-  // 공통 페이지 스타일 (깨짐 방지용)
-  const pageWrapperStyle: React.CSSProperties = {
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#ffffff",
-    contain: "content", // 4분할 깨짐 방지 핵심
-    overflow: "hidden",
-    display: "block",
-  };
+  if (!mounted || size.width === 0) return null;
 
   return (
-    <div
+    <main
       style={{
         width: "100vw",
-        height: "100vh",
-        backgroundColor: "#ffffff",
-        position: "relative",
+        height: "calc(var(--vh, 1vh) * 100)", // 🚨 카톡 툴바 대응 높이
+        position: "fixed",
+        top: 0,
+        left: 0,
+        backgroundColor: "#000",
         overflow: "hidden",
       }}
     >
-      {/* Navbar - 폰트 스타일 적용 */}
+      {/* Navbar: fixed로 뷰포트 상단에 박아버림 */}
       <nav
         style={{
-          position: "absolute",
-          top: dimensions.isMobile ? "25px" : "60px",
-          right: dimensions.isMobile ? "25px" : "80px",
+          position: "fixed",
+          top: "30px", // 카톡 상단 바 고려해서 살짝 내림
+          right: "40px",
           zIndex: 9999,
           display: "flex",
-          gap: dimensions.isMobile ? "1.5rem" : "4rem",
-          fontSize: dimensions.isMobile ? "16px" : "18px",
-          fontWeight: "700",
-          fontFamily: "var(--font-sans)", // 우리가 설정한 고딕 적용
-          letterSpacing: "0.1em",
-          color: "#000000",
+          gap: "2rem",
+          mixBlendMode: "difference",
         }}
       >
-        <span style={{ cursor: "pointer" }} onClick={() => goToPage(2)}>
+        <button
+          onClick={() => bookRef.current?.pageFlip().flip(2)}
+          style={{
+            cursor: "pointer",
+            color: "#fff",
+            fontSize: "13px",
+            fontWeight: "900",
+            background: "none",
+            border: "none",
+          }}
+        >
           ABOUT
-        </span>
-        <span style={{ cursor: "pointer" }} onClick={() => goToPage(4)}>
+        </button>
+        <button
+          onClick={() => bookRef.current?.pageFlip().flip(4)}
+          style={{
+            cursor: "pointer",
+            color: "#fff",
+            fontSize: "13px",
+            fontWeight: "900",
+            background: "none",
+            border: "none",
+          }}
+        >
           WORKS
-        </span>
-        <span style={{ cursor: "pointer", color: "#ccc" }}>CONTACT</span>
+        </button>
       </nav>
 
       <div
@@ -102,45 +136,41 @@ export default function Magazine() {
         {/* @ts-ignore */}
         <HTMLFlipBook
           ref={bookRef}
-          width={dimensions.width}
-          height={dimensions.height}
+          width={size.width}
+          height={size.height}
           size="stretch"
-          minWidth={dimensions.width}
-          maxWidth={dimensions.width}
-          minHeight={dimensions.height}
-          maxHeight={dimensions.height}
-          usePortrait={dimensions.isMobile}
-          showCover={true} // 표지가 하나씩 나오게 설정
-          flippingTime={800}
-          clickEventForward={true}
-          useMouseEvents={true}
-          swipeDistance={30}
-          showPageCorners={false}
-          disableFlipByClick={false}
-          mobileScrollSupport={true}
-          className="magazine-book"
+          minWidth={size.width}
+          maxWidth={size.width}
+          minHeight={size.height}
+          maxHeight={size.height}
+          showCover={false}
+          drawShadow={true}
+          usePortrait={window.innerWidth < 768}
+          flippingTime={1000}
+          autoSize={true}
+          startPage={0}
+          className="magazine-canvas"
         >
-          {/* 각 페이지를 wrapper로 감싸서 깨짐 방지 */}
-          <div style={pageWrapperStyle}>
+          <Page>
             <CoverLeftPage />
-          </div>
-          <div style={pageWrapperStyle}>
+          </Page>
+          <Page>
             <CoverRightPage />
-          </div>
-          <div style={pageWrapperStyle}>
+          </Page>
+          <Page>
             <IntroLeftPage />
-          </div>
-          <div style={pageWrapperStyle}>
+          </Page>
+          <Page>
             <IntroRightPage />
-          </div>
-          <div style={pageWrapperStyle}>
+          </Page>
+          <Page>
             <LawyerLeftPage />
-          </div>
-          <div style={pageWrapperStyle}>
+          </Page>
+          <Page>
             <LawyerRightPage />
-          </div>
+          </Page>
         </HTMLFlipBook>
       </div>
-    </div>
+    </main>
   );
 }

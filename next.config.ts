@@ -8,6 +8,7 @@ const nextConfig = {
   },
   // 주소 끝에 슬래시를 붙여서 경로 인식을 안정적으로 만듭니다.
   trailingSlash: true,
+  reactStrictMode: false,
 };
 
 export default nextConfig;
