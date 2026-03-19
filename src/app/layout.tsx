@@ -47,7 +47,7 @@ export const metadata = {
     type: "website",
     images: [
       {
-        url: "https://dj-ice-breaking-images.s3.us-east-1.amazonaws.com/intro_visual.png", // 카톡 공유 시 뜰 메인 이미지 (1200x630 권장)
+        url: "https://dj-ice-breaking-images.s3.us-east-1.amazonaws.com/main_visual.png", // 카톡 공유 시 뜰 메인 이미지 (1200x630 권장)
         width: 1200,
         height: 630,
         alt: "포트폴리오",
