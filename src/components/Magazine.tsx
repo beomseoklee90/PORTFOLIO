@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 페이지 컴포넌트 임포트
+// 임포트 생략 (CoverLeftPage 등 기존과 동일)
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -15,11 +15,10 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
     <div
       ref={ref}
-      className="page-wrapper"
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: "#0c0c0c",
+        backgroundColor: "#080808",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -46,8 +45,8 @@ export default function Magazine() {
       const isLandscape = vw > vh;
 
       if (isLandscape) {
-        // 가로 모드: 상하를 90% 정도 채워 '바닥에 놓인 책' 느낌 강조
-        const targetHeight = vh * 0.9;
+        // 가로: 실제 책을 눕혀놓은 듯한 비율 (높이의 92% 사용)
+        const targetHeight = vh * 0.92;
         const targetWidth = Math.floor(targetHeight * 0.72);
         setSize({ width: targetWidth, height: targetHeight });
       } else {
@@ -78,7 +77,7 @@ export default function Magazine() {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "#0c0c0c",
+        backgroundColor: "#080808",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -135,14 +134,14 @@ export default function Magazine() {
         maxHeight={size.height}
         showCover={false}
         drawShadow={true}
-        flippingTime={600}
+        flippingTime={500}
         usePortrait={window.innerWidth < window.innerHeight}
         autoSize={true}
         startPage={0}
         className="magazine-canvas"
-        // 🚨 수정: shadowOpacity -> maxShadowOpacity
-        maxShadowOpacity={0.5}
-        mobileScrollSupport={false}
+        maxShadowOpacity={0.4}
+        // 🚨 스크롤 기능 유지 (휠 지원)
+        mobileScrollSupport={true}
       >
         <Page>
           <CoverLeftPage />
