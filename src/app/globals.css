@@ -5,6 +5,27 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* 1. 브라우저의 다크모드/라이트모드 자동 전환을 강제로 끄고 라이트모드로 고정합니다. */
+:root {
+  color-scheme: light !important;
+}
+
+/* 2. 페이지 전환 시 배경색이 투명해지거나 바뀌는 것을 방지합니다. */
+html, body {
+  background-color: #ffffff !important; /* 사장님 사이트 배경색으로 고정 */
+  margin: 0;
+  padding: 0;
+  /* 아래 코드가 전환 시 깜빡임을 잡는 핵심입니다. */
+  -webkit-tap-highlight-color: transparent;
+  backface-visibility: hidden;
+}
+
+/* 3. Next.js의 페이지 전환 레이아웃이 겹칠 때 생기는 잔상을 제거합니다. */
+#next-hydration-healing {
+  display: none !important;
+}
+
 /* 모든 요소에 강제로 고딕 적용 */
 * {
   font-family:
@@ -27,12 +48,12 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-body {
+ /* body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
-  -webkit-font-smoothing: antialiased; /* 글자를 더 매끄럽게 */
-  -moz-osx-font-smoothing: grayscale;
-}
+  -webkit-font-smoothing: antialiased; /* 글자를 더 매끄럽게 
+  -moz-osx-font-smoothing: grayscale;} */
+
 
 /* 모든 페이지 전환 요소나 메인 컨테이너에 적용 */
 * {
