@@ -5,7 +5,7 @@ export default function LawyerLeftPage() {
   return (
     <div className="page w-full h-full relative bg-neutral-900 border-r border-neutral-200">
       <Image
-        src="/images/lawyer_visual.png"
+        src="https://dj-ice-breaking-images.s3.us-east-1.amazonaws.com/lawyer-profile.png"
         alt="Premium Lawyer Branding Concept"
         fill
         className="object-cover"
