@@ -9,8 +9,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      {/* className에 폰트 변수 넣지 말고 그냥 비워두세요. globals.css의 * { ... } 가 잡을 겁니다. */}
-      <body>{children}</body>
+      {/* 바디에 직접 백그라운드 컬러를 박아서 CSS 로드 전 깜빡임을 방어합니다 */}
+      <body style={{ backgroundColor: "#ffffff" }}>{children}</body>
     </html>
   );
 }
