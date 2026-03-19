@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 🚨 [풀 로드] dynamic 대신 정적 임포트로 빌드 시점에 다 묶어버립니다.
+// 정적 로드
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -15,7 +15,6 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
     <div
       ref={ref}
-      className="page-wrapper"
       style={{
         width: "100%",
         height: "100%",
@@ -32,7 +31,6 @@ Page.displayName = "Page";
 export default function Magazine() {
   const [mounted, setMounted] = useState(false);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [orientation, setOrientation] = useState("portrait");
   const bookRef = useRef<any>(null);
 
   useEffect(() => {
@@ -42,9 +40,9 @@ export default function Magazine() {
         ? window.visualViewport.height
         : window.innerHeight;
       const vw = window.innerWidth;
-      const isLandscape = vw > vh;
 
-      setOrientation(isLandscape ? "landscape" : "portrait");
+      // 가로 모드면 한 쪽당 너비를 절반으로, 세로면 전체로
+      const isLandscape = vw > vh;
       setSize({
         width: isLandscape ? Math.floor(vw / 2) : vw,
         height: vh,
@@ -54,10 +52,10 @@ export default function Magazine() {
 
     updateSize();
     window.addEventListener("resize", updateSize);
-    window.addEventListener("orientationchange", () => {
-      // 🚨 가로 전환 시 즉각 재배치 (카톡 브라우저 대응)
-      setTimeout(updateSize, 300);
-    });
+    // 가로 모드 전환 대응 강화
+    window.addEventListener("orientationchange", () =>
+      setTimeout(updateSize, 300),
+    );
 
     return () => {
       window.removeEventListener("resize", updateSize);
@@ -78,7 +76,7 @@ export default function Magazine() {
         backgroundColor: "#000",
       }}
     >
-      {/* Navbar - zIndex 최상단 고정 */}
+      {/* Navbar - 텍스트보다 위에 있게 zIndex 상향 */}
       <nav
         style={{
           position: "fixed",
@@ -139,14 +137,12 @@ export default function Magazine() {
           maxHeight={size.height}
           showCover={false}
           drawShadow={true}
-          usePortrait={orientation === "portrait"}
-          flippingTime={600} // 🚨 더 빠른 전환으로 잔상 제거
+          usePortrait={window.innerWidth < window.innerHeight}
+          flippingTime={600}
           autoSize={true}
           startPage={0}
-          disableFlipByClick={false}
           className="magazine-canvas"
         >
-          {/* 🚨 모든 페이지를 즉시 로드 */}
           <Page>
             <CoverLeftPage />
           </Page>
