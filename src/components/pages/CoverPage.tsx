@@ -17,7 +17,7 @@ export default function CoverPage() {
       <div className="w-full h-full relative" style={{ isolation: "isolate" }}>
         {/* 사진 배치 - grayscale 효과 유지 */}
         <Image
-          src="/images/image_0.png"
+          src="/images/image_0.webp"
           alt="Architect Visual"
           fill
           className="object-cover grayscale"
