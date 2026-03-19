@@ -1,36 +1,34 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
 @tailwind base; @tailwind components; @tailwind utilities;
 
-:root { color-scheme: dark !important; }
+:root { color-scheme: light !important; }
 
-/* 🚨 1. 스크롤바(휠) 물리적 완전 삭제 및 화면 고정 */
+/* 🚨 1. 스크롤바(휠 바디) 물리적 박멸 및 화면 고정 */
 html, body {
   width: 100vw;
   height: calc(var(--vh, 1vh) * 100);
   margin: 0; padding: 0;
-  /* 브라우저 기본 스크롤(바운스 효과 등) 원천 차단 */
+  /* 🚨 전체 화면 스크롤은 차단하되 내부 스크롤 허용 */
   overflow: hidden !important; 
-  background-color: #121212;
-  /* 모바일에서 새로고침 당겨지는 현상 방지 */
-  overscroll-behavior-y: none;
-  touch-action: pan-y;
+  /* 🚨 [사장님 요청 1] 검은색 영역 삭제 - 딥 그레이(#121212) -> 화이트(#ffffff) */
+  background-color: #ffffff; 
 }
 
-/* 모든 요소에서 스크롤바 안 보이게 처리 */
+/* 모든 요소에서 스크롤바 투명화 */
 * {
   -ms-overflow-style: none; /* IE, Edge */
   scrollbar-width: none; /* Firefox */
-  box-sizing: border-box;
   font-family: 'Pretendard', sans-serif !important;
-  /* 반짝임 방지용 GPU 가속 */
+  /* 🚨 [복구] 하드웨어 가속 (반짝임 방지) */
   -webkit-font-smoothing: antialiased;
   backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 *::-webkit-scrollbar {
   display: none !important; /* Chrome, Safari */
 }
 
-/* 🚨 2. 페이지 내부 레이아웃 (내용물 가두기) */
+/* 🚨 2. 페이지 내부 레이아웃 (내용물 스크롤 허용 및 고정) */
 .page-section {
   width: 100%;
   height: 100%;
@@ -38,16 +36,32 @@ html, body {
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  /* 내용이 밖으로 나가지 못하게 절대 방어 */
-  overflow: hidden !important; 
+  
+  /* 🚨 [복구] 내용이 길면 안에서 '부드럽게' 스크롤 되도록 변경 */
+  overflow-y: auto !important; 
+  overflow-x: hidden !important; 
+  
   isolation: isolate;
   /* 책등(중앙) 그라데이션 */
   background: linear-gradient(to right, #f2f2f2 0%, #ffffff 4%, #ffffff 100%);
+  contain: paint; /* 🚨 반짝임 방지 가속 */
+}
+
+/* 🚨 [사장님 요청 2] 이미지 라운딩 컨테이너 정의 */
+.magazine-image-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  /* 🚨 사진 테두리 둥글게 */
+  border-radius: 12px; 
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  background-color: #fff;
 }
 
 /* 🚨 3. PC 풀사이즈 vs 모바일 책 질감 반응형 설정 */
 
-/* [PC/가로 모드] 풀사이즈 (여백 없음, 직각 모서리) */
+/* [PC/가로 모드] [복구] 풀사이즈 (여백 없음, 직각 모서리) */
 @media (min-width: 769px) {
   .magazine-canvas {
     border-radius: 0 !important;
@@ -58,14 +72,36 @@ html, body {
   }
 }
 
-/* [모바일/세로 모드] 진짜 책 느낌 (모서리 둥글게, 겹침 그림자) */
+/* [모바일/세로 모드] [복구] 진짜 책 느낌 (모서리 둥글게, 겹침 그림자) */
 @media (max-width: 768px) {
   .magazine-canvas {
     border-radius: 12px !important;
     box-shadow: 0 30px 60px rgba(0,0,0,0.6) !important;
   }
+  
+  /* 🚨 [사장님 요청 2] 모바일에서 글 중앙 배치 */
   .page-section {
-    /* 🚨 사장님 맞춤 수술 완료: 하단 패딩을 28vh로 대폭 올려서 선과 번호를 위로 밀어 올림 */
-    padding: 18vh 24px 28vh !important; 
+    /* 양옆 패딩을 크게 줘서 텍스트를 중앙으로 당김 */
+    padding: 15vh 12vw 20vh !important; 
+    justify-content: center;
   }
+
+  .page-section h1 {
+    font-size: 2.2rem !important;
+    text-align: center; /* 가운데 정렬 */
+    word-break: keep-all;
+    margin-bottom: 20px;
+  }
+  
+  .page-section p {
+    text-align: center; /* 본문 가운데 정렬 */
+    font-size: 1.125rem;
+  }
+}
+
+/* [복구] 이미지 하드웨어 가속 */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  object-fit: cover;
+  transform: translateZ(0); /* 🚨 필수 */
 }

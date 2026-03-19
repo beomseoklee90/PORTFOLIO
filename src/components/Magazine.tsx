@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 컴포넌트 임포트
+// 컴포넌트 임포트 (사장님 폴더 구조)
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -11,9 +11,10 @@ import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
+// 🚨 [복구] 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
 const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
-    // 🚨 여기서도 내부 스크롤을 허용해야 합니다.
+    // 내부 스크롤을 위해 overflow-y 허용
     <div
       ref={ref}
       style={{
@@ -38,6 +39,7 @@ export default function Magazine() {
   useEffect(() => {
     setMounted(true);
     const updateSize = () => {
+      // 🚨 [복구] 카톡 브라우저 '진짜' 가시 영역 높이 대응
       const vh = window.visualViewport
         ? window.visualViewport.height
         : window.innerHeight;
@@ -46,13 +48,11 @@ export default function Magazine() {
       const isDesktop = vw > 768 && vw > vh;
 
       if (isDesktop) {
-        // PC: 100% 꽉 채우는 풀사이즈 (양면)
+        // [복구] 데스크탑: 100% 풀사이즈 (양면)
         setSize({ width: Math.floor(vw / 2), height: vh });
       } else {
-        // 🚨 모바일 세로: 100%가 아니라 90% 크기로 띄워서 '드래그 가능한 객체'임을 시각적으로 강조
-        const targetWidth = Math.floor(vw * 0.92);
-        const targetHeight = Math.floor(vh * 0.88);
-        setSize({ width: targetWidth, height: targetHeight });
+        // [복구] 모바일: 100% 풀사이즈 (단면)
+        setSize({ width: vw, height: vh });
       }
 
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
@@ -64,7 +64,10 @@ export default function Magazine() {
       setTimeout(updateSize, 300),
     );
 
-    return () => window.removeEventListener("resize", updateSize);
+    return () => {
+      window.removeEventListener("resize", updateSize);
+      window.removeEventListener("orientationchange", updateSize);
+    };
   }, []);
 
   if (!mounted || size.width === 0) return null;
@@ -77,20 +80,21 @@ export default function Magazine() {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "#121212",
+        backgroundColor: "#ffffff", // 🚨 [사장님 요청 1] 검은 배경 삭제
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        overflow: "hidden", // 메인 휠 방지
       }}
     >
       <nav
         style={{
           position: "fixed",
-          top: "20px",
-          right: "30px",
+          top: "30px",
+          right: "40px",
           zIndex: 9999,
           display: "flex",
-          gap: "1.5rem",
+          gap: "2rem",
           mixBlendMode: "difference",
         }}
       >
@@ -141,12 +145,12 @@ export default function Magazine() {
         autoSize={true}
         startPage={0}
         className="magazine-canvas"
-        maxShadowOpacity={0.5}
-        /* 🚨 터치로 드래그해서 넘기기 최적화 */
-        swipeDistance={20} // 살짝만 드래그해도 반응하도록 수치 낮춤
+        maxShadowOpacity={0.4}
+        /* 🚨 [복구] 풀 로드 및 드래그 이벤트 개방 */
+        mobileScrollSupport={true}
         clickEventForward={true}
         useMouseEvents={true}
-        mobileScrollSupport={true}
+        swipeDistance={30}
       >
         <Page>
           <CoverLeftPage />
