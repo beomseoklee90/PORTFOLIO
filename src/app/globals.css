@@ -8,21 +8,16 @@ html, body {
   width: 100vw;
   height: calc(var(--vh, 1vh) * 100);
   overflow: hidden;
-  background-color: #000; /* 잡지 뒤 배경은 블랙으로 간지나게 */
+  background-color: #0c0c0c;
 }
 
-/* 🚨 [디자인 추가] 이미지 테두리 곡률 및 그림자 */
-.magazine-image-container {
+/* 🚨 [겹침 효과] 잡지 컨테이너 자체에 가상의 종이 층을 추가 */
+.magazine-canvas {
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
   position: relative;
-  width: 90%;  /* 살짝 여유를 줘서 그림자가 보이게 함 */
-  height: 85%; /* 상하 여백 확보 */
-  margin: auto;
-  border-radius: 20px; /* 🚨 테두리 둥글게 */
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3); /* 🚨 깊이감 있는 그림자 */
-  background-color: #fff;
 }
 
+/* 책등(중앙) 그라데이션 및 입체감 */
 .page-section {
   width: 100%;
   height: 100%;
@@ -30,21 +25,34 @@ html, body {
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  /* 🚨 모바일 여백: 글씨 내리고 선 올림 */
-  padding: 12vh 24px 15vh;
+  /* 🚨 모바일 여백 유지 (글씨 내림 / 선 올림) */
+  padding: 12vh 30px 18vh;
   isolation: isolate;
+  /* 책의 중앙 접히는 부분 그림자 */
+  background: linear-gradient(to right, #f5f5f5 0%, #ffffff 3%, #ffffff 100%);
+}
+
+/* 🚨 [사장님 요청] 종이가 겹친 듯한 테두리 디자인 */
+.magazine-image-container {
+  position: relative;
+  width: 90%;
+  height: 82%;
+  margin: auto;
+  border-radius: 10px;
+  overflow: hidden;
+  /* 겹겹이 쌓인 종이 느낌의 다중 그림자 */
+  box-shadow: 
+    0 0 0 1px rgba(0,0,0,0.05), /* 아주 미세한 테두리 */
+    4px 4px 0px -1px #eee,      /* 아래쪽 겹친 종이 1 */
+    4px 4px 0px 0px rgba(0,0,0,0.1),
+    8px 8px 0px -2px #ddd,      /* 아래쪽 겹친 종이 2 */
+    8px 8px 0px -1px rgba(0,0,0,0.1);
+  background-color: #fff;
 }
 
 @media (max-width: 768px) {
   .page-section {
     padding-top: 20vh !important;
     padding-bottom: 22vh !important;
-  }
-}
-
-/* 🚨 가로 모드일 때 상하 가득 채우기 */
-@media (orientation: landscape) {
-  .magazine-canvas {
-    height: 100vh !important;
   }
 }

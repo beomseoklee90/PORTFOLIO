@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
+// 페이지 컴포넌트 임포트
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -14,10 +15,11 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
     <div
       ref={ref}
+      className="page-wrapper"
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: "#000",
+        backgroundColor: "#0c0c0c",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -41,20 +43,16 @@ export default function Magazine() {
         ? window.visualViewport.height
         : window.innerHeight;
       const vw = window.innerWidth;
-
       const isLandscape = vw > vh;
 
       if (isLandscape) {
-        // 🚨 가로 모드: 상하를 꽉 채우기 위해 height 기준으로 width를 역산 (3:4 또는 4:5 비율 권장)
-        // 여기선 화면 높이에 맞추고 가로는 그에 비례하게 설정
-        const targetHeight = vh;
-        const targetWidth = Math.floor(targetHeight * 0.75); // 잡지 한 페이지 비율
+        // 가로 모드: 상하를 90% 정도 채워 '바닥에 놓인 책' 느낌 강조
+        const targetHeight = vh * 0.9;
+        const targetWidth = Math.floor(targetHeight * 0.72);
         setSize({ width: targetWidth, height: targetHeight });
       } else {
-        // 🚨 세로 모드: 기존처럼 가로 너비에 맞춤
         setSize({ width: vw, height: vh });
       }
-
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
     };
 
@@ -80,7 +78,7 @@ export default function Magazine() {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "#000",
+        backgroundColor: "#0c0c0c",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -137,11 +135,14 @@ export default function Magazine() {
         maxHeight={size.height}
         showCover={false}
         drawShadow={true}
+        flippingTime={600}
         usePortrait={window.innerWidth < window.innerHeight}
-        flippingTime={500}
         autoSize={true}
         startPage={0}
         className="magazine-canvas"
+        // 🚨 수정: shadowOpacity -> maxShadowOpacity
+        maxShadowOpacity={0.5}
+        mobileScrollSupport={false}
       >
         <Page>
           <CoverLeftPage />
