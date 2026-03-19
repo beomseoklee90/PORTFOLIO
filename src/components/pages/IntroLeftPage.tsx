@@ -1,93 +1,44 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 export default function IntroLeftPage() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   return (
-    <section
-      className="page-section"
-      style={{
-        backgroundColor: "#ffffff",
-        /* 모바일은 이미지가 꽉 차게, PC는 여백을 주어 고급스럽게 */
-        padding: isMobile ? "0" : "100px 120px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          /* PC에서는 전체 높이를 쓰고, 모바일에서는 이미지 비율에 맞춤 */
-          height: isMobile ? "auto" : "100%",
-          overflow: "hidden",
-          isolation: "isolate", // 레이어 엉킴 방지
-        }}
-      >
-        {isMobile ? (
-          /* 모바일용 최적화: 
-             Next.js Image 대신 일반 img를 쓸 때도 스타일로 격리 
-          */
-          <Image
-            fill // 부모 div 꽉 채우기
-            priority // 🚨 드디어 사용 가능! "미리 로드"
-            unoptimized={true} // 원본 화질 유지 (깜빡임 최소화)
-            src="/images/intro_visual.webp"
-            alt="Philosophy Visual Mobile"
-            style={{
-              width: "100%",
-              height: "auto",
-              display: "block",
-              filter: "grayscale(100%)",
-              /* 렌더링 시 타일 깨짐 방지 */
-              WebkitBackfaceVisibility: "hidden",
-            }}
-          />
-        ) : (
-          /* PC용 최적화 */
-          <div
-            style={{ position: "relative", width: "100%", height: "100%" }}
-            className="magazine-image-container"
-          >
-            <Image
-              src="/images/intro_visual.webp"
-              alt="Philosophy Visual PC"
-              fill
-              style={{
-                objectFit: "cover",
-                filter: "grayscale(100%)",
-              }}
-              unoptimized
-              priority
-            />
-          </div>
-        )}
+    <section className="page-section">
+      {/* 텍스트 영역 (globals.css 설정으로 모바일에서 자동 왼쪽 정렬) */}
+      <div style={{ marginBottom: "30px" }}>
+        <h1 style={{ color: "#000", fontWeight: 800 }}>ICE BREAKING LAB</h1>
+        <p style={{ color: "#666" }}>Philosophy & Vision</p>
       </div>
 
-      {/* 캡션: PC에서만 노출되도록 설정 유지 및 category 스타일 적용 */}
-      {!isMobile && (
-        <div
-          className="category"
+      {/* 이미지 영역: 일반 img 대신 Next/Image + priority 조합 */}
+      <div
+        className="magazine-image-container"
+        style={{ position: "relative", width: "100%", height: "45vh" }}
+      >
+        <Image
+          src="/images/intro_visual.webp"
+          alt="Philosophy Visual"
+          fill
           style={{
-            paddingTop: "20px",
-            fontSize: "11px",
-            color: "#999",
-            letterSpacing: "0.2em",
+            objectFit: "cover",
+            filter: "grayscale(100%)",
+            /* 🚨 GPU 가속 */
+            transform: "translateZ(0)",
+            WebkitBackfaceVisibility: "hidden",
           }}
-        >
-          Portfolio Concept 01 / Philosophy
-        </div>
-      )}
+          priority // 🚨 다음 페이지 미리 로딩 (반짝임 방지 핵심)
+          unoptimized={true}
+        />
+      </div>
+
+      <div style={{ marginTop: "30px" }}>
+        <p>
+          우리는 본질을 꿰뚫는 전략으로
+          <br />
+          당신의 가치를 증명합니다.
+        </p>
+      </div>
     </section>
   );
 }

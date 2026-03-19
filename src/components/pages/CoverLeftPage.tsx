@@ -1,57 +1,49 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 export default function CoverLeftPage() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   return (
-    /* 1. section 태그와 page-section 클래스를 사용하여 globals.css의 격리 속성 적용
-      2. 인라인 스타일을 최소화하고 구조적 안정성 확보
-    */
-    <section
-      className="page-section"
-      style={{
-        padding: 0,
-        backgroundColor: "#ffffff",
-        position: "relative",
-      }}
-    >
+    <section className="page-section" style={{ padding: 0 }}>
+      {/* 1. magazine-image-container: globals.css에 정의된 라운딩 및 그림자 적용
+         2. isolation: "isolate": 내부 요소와 외부 레이어 간섭 차단 (반짝임 방지)
+      */}
       <div
+        className="magazine-image-container"
         style={{
           width: "100%",
           height: "100%",
           position: "relative",
-          /* 이미지 렌더링 시 타일 분할 현상을 방지하기 위한 레이어 격리 */
           isolation: "isolate",
+          borderRadius: 0, // 표지이므로 꽉 채우기 위해 라운딩 제거 (원하시면 12px로 변경)
         }}
-        className="magazine-image-container"
       >
         <Image
           src="/images/main_visual.webp"
           alt="Main Visual"
           fill
           style={{
-            /* 이미지는 cover로 꽉 채우되, 
-               혹시라도 브라우저가 이미지를 쪼개지 못하도록 설정 
-            */
             objectFit: "cover",
             objectPosition: "center center",
+            /* 🚨 GPU 가속 강제 (반짝임 방지 핵심) */
+            transform: "translateZ(0)",
+            WebkitBackfaceVisibility: "hidden",
           }}
-          priority // 첫 페이지이므로 최우선 로딩
-          unoptimized={true} // 원본 화질 유지 및 처리 부하 감소
+          priority // 🚨 다음 페이지 넘길 때 하얗게 뜨는 현상 방지 (미리 로드)
+          unoptimized={true}
         />
 
-        {/* 이미지 위에 텍스트를 얹고 싶으시다면 
-          여기에 <h1>이나 <span>을 추가하면 됩니다. 
-        */}
+        {/* 텍스트가 필요하다면 이 아래에 배치 (모바일 좌측 정렬 자동 적용됨) */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "10%",
+            left: "24px",
+            zIndex: 10,
+          }}
+        >
+          {/* 예시: <h1 style={{ color: "#fff" }}>ICE BREAKING LAB</h1> */}
+        </div>
       </div>
     </section>
   );
