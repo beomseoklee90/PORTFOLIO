@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 컴포넌트 임포트 (사장님 폴더 구조)
+// 컴포넌트 임포트 (폴더 구조 유지)
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -11,10 +11,10 @@ import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
-// 🚨 [복구] 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
+// 🚨 [사장님 요청 4] 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
 const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
-    // 내부 스크롤을 위해 overflow-y 허용
+    // 내부 스크롤을 위해 overflow-y 허용, 가로 넘침 방지
     <div
       ref={ref}
       style={{
@@ -39,7 +39,7 @@ export default function Magazine() {
   useEffect(() => {
     setMounted(true);
     const updateSize = () => {
-      // 🚨 [복구] 카톡 브라우저 '진짜' 가시 영역 높이 대응
+      // 카톡 브라우저 상하단 바 영역 제외한 진짜 가시 영역 높이 대응
       const vh = window.visualViewport
         ? window.visualViewport.height
         : window.innerHeight;
@@ -48,10 +48,10 @@ export default function Magazine() {
       const isDesktop = vw > 768 && vw > vh;
 
       if (isDesktop) {
-        // [복구] 데스크탑: 100% 풀사이즈 (양면)
+        // [사장님 요청 5] 데스크탑: 100% 꽉 채우기 (양면이니까 width는 반갈죽)
         setSize({ width: Math.floor(vw / 2), height: vh });
       } else {
-        // [복구] 모바일: 100% 풀사이즈 (단면)
+        // [사장님 요청 6] 모바일: 100% 꽉 채우기 (단면)
         setSize({ width: vw, height: vh });
       }
 
@@ -75,18 +75,19 @@ export default function Magazine() {
   return (
     <main
       style={{
-        width: "100vw",
-        height: "calc(var(--vh, 1vh) * 100)",
+        width: "100%",
+        height: "calc(var(--vh, 1vh) * 100)" /* 🚨 100vw -> 100% 변경 */,
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "#ffffff", // 🚨 [사장님 요청 1] 검은 배경 삭제
+        backgroundColor: "#ffffff", // [사장님 요청 9] 검은 배경 삭제 -> 흰색
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        overflow: "hidden", // 메인 휠 방지
+        overflow: "hidden", // 브라우저 전체 스크롤 방지
       }}
     >
+      {/* 🚨 네비게이션: 클릭 이벤트를 뺏기지 않도록 확실한 위치 고정 */}
       <nav
         style={{
           position: "fixed",
@@ -146,7 +147,7 @@ export default function Magazine() {
         startPage={0}
         className="magazine-canvas"
         maxShadowOpacity={0.4}
-        /* 🚨 [복구] 풀 로드 및 드래그 이벤트 개방 */
+        /* 🚨 [사장님 요청 4] 터치 넘기기 및 휠 방지 조화 옵션 */
         mobileScrollSupport={true}
         clickEventForward={true}
         useMouseEvents={true}
