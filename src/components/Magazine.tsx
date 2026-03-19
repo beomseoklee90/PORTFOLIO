@@ -177,15 +177,15 @@ export default function Magazine() {
         usePortrait={
           window.innerWidth <= 768 || window.innerWidth <= window.innerHeight
         }
-        flippingTime={400}
+        flippingTime={1000} // 🚨 0.4초 -> 1.0초로 늦췄습니다. 훨씬 묵직하고 부드럽게 넘어갑니다.
+        mobileScrollSupport={true} // 🚨 다시 켰습니다. 모바일에서 휙휙 잘 넘어가야죠.
+        maxShadowOpacity={0.2} // 그림자를 아주 살짝만 줘서 입체감은 살리고 연산 부하는 줄였습니다.
+        swipeDistance={15} // 살짝만 밀어도 잘 넘어가게 감도를 높였습니다.
         autoSize={true}
         startPage={0}
         className="magazine-canvas"
-        maxShadowOpacity={0}
-        mobileScrollSupport={false}
         clickEventForward={true}
         useMouseEvents={true}
-        swipeDistance={30}
       >
         <Page>
           <CoverLeftPage />
