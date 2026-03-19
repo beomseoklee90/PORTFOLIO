@@ -23,11 +23,13 @@ export default function CoverLeftPage() {
           alt="Main Visual"
           fill
           style={{
+            width: "100%",
+            height: "100%",
             objectFit: "cover",
-            objectPosition: "center center",
-            /* 🚨 GPU 가속 강제 (반짝임 방지 핵심) */
+            /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
             transform: "translateZ(0)",
-            WebkitBackfaceVisibility: "hidden",
+            willChange: "transform",
+            display: "block",
           }}
           priority={true} // 🚨 다음 페이지 넘길 때 하얗게 뜨는 현상 방지 (미리 로드)
           unoptimized={true}

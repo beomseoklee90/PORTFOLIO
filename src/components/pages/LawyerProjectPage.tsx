@@ -24,7 +24,15 @@ export default function LawyerLeftPage() {
           src="/images/lawyer_visual.webp"
           alt="Premium Lawyer Branding Concept"
           fill
-          style={{ objectFit: "cover" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
+            transform: "translateZ(0)",
+            willChange: "transform",
+            display: "block",
+          }}
           sizes="50vw"
           priority={true}
           unoptimized={true} // 렌더링 부하 감소

@@ -24,8 +24,17 @@ export default function CoverPage() {
           alt="Architect Visual"
           fill
           className="object-cover grayscale"
-          priority={true}
+          priority
           unoptimized={true} // 처리 부하 감소
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
+            transform: "translateZ(0)",
+            willChange: "transform",
+            display: "block",
+          }}
         />
 
         {/* 3. 사진 위 오버레이 텍스트: 

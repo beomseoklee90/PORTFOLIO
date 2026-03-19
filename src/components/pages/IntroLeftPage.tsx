@@ -20,15 +20,17 @@ export default function IntroLeftPage() {
           src="/images/intro_visual.webp"
           alt="Philosophy Visual"
           fill
-          style={{
-            objectFit: "cover",
-            filter: "grayscale(100%)",
-            /* 🚨 GPU 가속 */
-            transform: "translateZ(0)",
-            WebkitBackfaceVisibility: "hidden",
-          }}
           priority={true} // 🚨 다음 페이지 미리 로딩 (반짝임 방지 핵심)
           unoptimized={true}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
+            transform: "translateZ(0)",
+            willChange: "transform",
+            display: "block",
+          }}
         />
       </div>
 

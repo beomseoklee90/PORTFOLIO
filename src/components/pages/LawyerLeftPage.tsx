@@ -60,8 +60,13 @@ export default function LawyerLeftPage() {
               alt="Lawyer Visual PC"
               fill
               style={{
+                width: "100%",
+                height: "100%",
                 objectFit: "cover",
-                filter: "grayscale(100%) contrast(1.1)",
+                /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
+                transform: "translateZ(0)",
+                willChange: "transform",
+                display: "block",
               }}
               unoptimized
               priority={true}
