@@ -52,7 +52,10 @@ export default function IntroLeftPage() {
           />
         ) : (
           /* PC용 최적화 */
-          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+          <div
+            style={{ position: "relative", width: "100%", height: "100%" }}
+            className="magazine-image-container"
+          >
             <Image
               src="/images/intro_visual.webp"
               alt="Philosophy Visual PC"

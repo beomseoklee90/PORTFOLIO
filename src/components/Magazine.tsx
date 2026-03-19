@@ -17,9 +17,10 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
       style={{
         width: "100%",
         height: "100%",
-        position: "relative",
-        backgroundColor: "#fff",
-        overflow: "hidden",
+        backgroundColor: "#000",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       {children}
@@ -41,19 +42,26 @@ export default function Magazine() {
         : window.innerHeight;
       const vw = window.innerWidth;
 
-      // 🚨 가로 모드면 양면, 세로 모드면 단면으로 즉시 계산
       const isLandscape = vw > vh;
-      setSize({
-        width: isLandscape ? Math.floor(vw / 2) : vw,
-        height: vh,
-      });
+
+      if (isLandscape) {
+        // 🚨 가로 모드: 상하를 꽉 채우기 위해 height 기준으로 width를 역산 (3:4 또는 4:5 비율 권장)
+        // 여기선 화면 높이에 맞추고 가로는 그에 비례하게 설정
+        const targetHeight = vh;
+        const targetWidth = Math.floor(targetHeight * 0.75); // 잡지 한 페이지 비율
+        setSize({ width: targetWidth, height: targetHeight });
+      } else {
+        // 🚨 세로 모드: 기존처럼 가로 너비에 맞춤
+        setSize({ width: vw, height: vh });
+      }
+
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
     };
 
     updateSize();
     window.addEventListener("resize", updateSize);
     window.addEventListener("orientationchange", () =>
-      setTimeout(updateSize, 300),
+      setTimeout(updateSize, 400),
     );
 
     return () => {
@@ -73,6 +81,9 @@ export default function Magazine() {
         top: 0,
         left: 0,
         backgroundColor: "#000",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <nav
@@ -114,53 +125,43 @@ export default function Magazine() {
         </button>
       </nav>
 
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+      {/* @ts-ignore */}
+      <HTMLFlipBook
+        ref={bookRef}
+        width={size.width}
+        height={size.height}
+        size="stretch"
+        minWidth={size.width}
+        maxWidth={size.width}
+        minHeight={size.height}
+        maxHeight={size.height}
+        showCover={false}
+        drawShadow={true}
+        usePortrait={window.innerWidth < window.innerHeight}
+        flippingTime={500}
+        autoSize={true}
+        startPage={0}
+        className="magazine-canvas"
       >
-        {/* @ts-ignore */}
-        <HTMLFlipBook
-          ref={bookRef}
-          width={size.width}
-          height={size.height}
-          size="stretch"
-          minWidth={size.width}
-          maxWidth={size.width}
-          minHeight={size.height}
-          maxHeight={size.height}
-          showCover={false}
-          drawShadow={true}
-          usePortrait={window.innerWidth < window.innerHeight}
-          flippingTime={500} // 🚨 전환을 더 빠르게 해서 반짝임 인지 차단
-          autoSize={true}
-          startPage={0}
-          className="magazine-canvas"
-        >
-          <Page>
-            <CoverLeftPage />
-          </Page>
-          <Page>
-            <CoverRightPage />
-          </Page>
-          <Page>
-            <IntroLeftPage />
-          </Page>
-          <Page>
-            <IntroRightPage />
-          </Page>
-          <Page>
-            <LawyerLeftPage />
-          </Page>
-          <Page>
-            <LawyerRightPage />
-          </Page>
-        </HTMLFlipBook>
-      </div>
+        <Page>
+          <CoverLeftPage />
+        </Page>
+        <Page>
+          <CoverRightPage />
+        </Page>
+        <Page>
+          <IntroLeftPage />
+        </Page>
+        <Page>
+          <IntroRightPage />
+        </Page>
+        <Page>
+          <LawyerLeftPage />
+        </Page>
+        <Page>
+          <LawyerRightPage />
+        </Page>
+      </HTMLFlipBook>
     </main>
   );
 }

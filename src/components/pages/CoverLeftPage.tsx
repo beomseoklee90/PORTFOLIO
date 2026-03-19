@@ -32,6 +32,7 @@ export default function CoverLeftPage() {
           /* 이미지 렌더링 시 타일 분할 현상을 방지하기 위한 레이어 격리 */
           isolation: "isolate",
         }}
+        className="magazine-image-container"
       >
         <Image
           src="/images/main_visual.webp"

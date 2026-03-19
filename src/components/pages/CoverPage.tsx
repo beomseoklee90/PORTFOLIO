@@ -14,7 +14,10 @@ export default function CoverPage() {
         position: "relative",
       }}
     >
-      <div className="w-full h-full relative" style={{ isolation: "isolate" }}>
+      <div
+        className="w-full h-full relative magazine-image-container"
+        style={{ isolation: "isolate" }}
+      >
         {/* 사진 배치 - grayscale 효과 유지 */}
         <Image
           src="/images/image_0.webp"

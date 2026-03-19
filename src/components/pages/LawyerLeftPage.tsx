@@ -51,7 +51,10 @@ export default function LawyerLeftPage() {
           />
         ) : (
           /* PC 최적화: Next.js Image로 고화질 처리 */
-          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+          <div
+            style={{ position: "relative", width: "100%", height: "100%" }}
+            className="magazine-image-container"
+          >
             <Image
               src="/images/lawyer_visual.webp"
               alt="Lawyer Visual PC"

@@ -16,7 +16,10 @@ export default function LawyerLeftPage() {
         position: "relative",
       }}
     >
-      <div className="w-full h-full relative" style={{ isolation: "isolate" }}>
+      <div
+        className="w-full h-full relative magazine-image-container"
+        style={{ isolation: "isolate" }}
+      >
         <Image
           src="/images/lawyer_visual.webp"
           alt="Premium Lawyer Branding Concept"
