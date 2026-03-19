@@ -3,14 +3,12 @@
 
 :root { color-scheme: light !important; }
 
-/* 🚨 1. 스크롤바(휠 바디) 물리적 박멸 및 화면 고정 */
+/* 1. 스크롤바(휠 바디) 물리적 박멸 및 화면 고정 */
 html, body {
   width: 100vw;
   height: calc(var(--vh, 1vh) * 100);
   margin: 0; padding: 0;
-  /* 🚨 전체 화면 스크롤은 차단하되 내부 스크롤 허용 */
   overflow: hidden !important; 
-  /* 🚨 [사장님 요청 1] 검은색 영역 삭제 - 딥 그레이(#121212) -> 화이트(#ffffff) */
   background-color: #ffffff; 
 }
 
@@ -19,7 +17,6 @@ html, body {
   -ms-overflow-style: none; /* IE, Edge */
   scrollbar-width: none; /* Firefox */
   font-family: 'Pretendard', sans-serif !important;
-  /* 🚨 [복구] 하드웨어 가속 (반짝임 방지) */
   -webkit-font-smoothing: antialiased;
   backface-visibility: hidden;
   transform-style: preserve-3d;
@@ -28,7 +25,7 @@ html, body {
   display: none !important; /* Chrome, Safari */
 }
 
-/* 🚨 2. 페이지 내부 레이아웃 (내용물 스크롤 허용 및 고정) */
+/* 2. 페이지 내부 레이아웃 */
 .page-section {
   width: 100%;
   height: 100%;
@@ -37,71 +34,79 @@ html, body {
   display: flex;
   flex-direction: column;
   
-  /* 🚨 [복구] 내용이 길면 안에서 '부드럽게' 스크롤 되도록 변경 */
   overflow-y: auto !important; 
   overflow-x: hidden !important; 
   
   isolation: isolate;
-  /* 책등(중앙) 그라데이션 */
   background: linear-gradient(to right, #f2f2f2 0%, #ffffff 4%, #ffffff 100%);
-  contain: paint; /* 🚨 반짝임 방지 가속 */
+  contain: paint; 
 }
 
-/* 🚨 [사장님 요청 2] 이미지 라운딩 컨테이너 정의 */
+/* 이미지 라운딩 컨테이너 */
 .magazine-image-container {
   position: relative;
   width: 100%;
   height: auto;
   overflow: hidden;
-  /* 🚨 사진 테두리 둥글게 */
   border-radius: 12px; 
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   background-color: #fff;
 }
 
-/* 🚨 3. PC 풀사이즈 vs 모바일 책 질감 반응형 설정 */
+/* 3. PC 풀사이즈 vs 모바일 책 질감 반응형 설정 */
 
-/* [PC/가로 모드] [복구] 풀사이즈 (여백 없음, 직각 모서리) */
+/* [PC/가로 모드] 풀사이즈 */
 @media (min-width: 769px) {
   .magazine-canvas {
     border-radius: 0 !important;
     box-shadow: none !important;
   }
   .page-section {
-    padding: 8vh 4vw; /* 넉넉한 데스크탑 여백 */
+    padding: 8vh 4vw; 
   }
 }
 
-/* [모바일/세로 모드] [복구] 진짜 책 느낌 (모서리 둥글게, 겹침 그림자) */
+/* 🚨 [모바일/세로 모드] 우측 하단 쏠림 완벽 해결 & 폰트 축소 */
 @media (max-width: 768px) {
   .magazine-canvas {
     border-radius: 12px !important;
     box-shadow: 0 30px 60px rgba(0,0,0,0.6) !important;
   }
   
-  /* 🚨 [사장님 요청 2] 모바일에서 글 중앙 배치 */
   .page-section {
-    /* 양옆 패딩을 크게 줘서 텍스트를 중앙으로 당김 */
-    padding: 15vh 12vw 20vh !important; 
-    justify-content: center;
+    /* 과도했던 여백을 줄여서 밀림 현상 방지 */
+    padding: 8vh 6vw 12vh !important; 
+    /* 🚨 완벽한 가로/세로 중앙 정렬 강제 */
+    justify-content: center !important;
+    align-items: center !important; 
+    text-align: center !important;
   }
 
+  /* 🚨 폰트 사이즈 축소 및 정렬 */
   .page-section h1 {
-    font-size: 2.2rem !important;
-    text-align: center; /* 가운데 정렬 */
+    font-size: 1.6rem !important; /* 2.2rem -> 1.6rem으로 대폭 축소 */
+    line-height: 1.4;
     word-break: keep-all;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    width: 100%;
   }
   
   .page-section p {
-    text-align: center; /* 본문 가운데 정렬 */
-    font-size: 1.125rem;
+    font-size: 0.95rem !important; /* 1.125rem -> 0.95rem으로 축소 */
+    line-height: 1.6;
+    width: 100%;
+  }
+
+  /* 모바일에서 이미지가 너무 크지 않도록 폭 조정 */
+  .magazine-image-container {
+    width: 90%;
+    margin-bottom: 20px; /* 이미지와 글씨 사이 여백 */
   }
 }
 
-/* [복구] 이미지 하드웨어 가속 */
+/* 이미지 하드웨어 가속 */
 img {
   image-rendering: -webkit-optimize-contrast;
   object-fit: cover;
-  transform: translateZ(0); /* 🚨 필수 */
+  transform: translateZ(0); 
 }
