@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 컴포넌트 임포트 (사장님 폴더 구조)
+// 컴포넌트 임포트
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -11,10 +11,8 @@ import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
-// 🚨 [복구] 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
 const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
-    // 내부 스크롤을 위해 overflow-y 허용
     <div
       ref={ref}
       style={{
@@ -32,20 +30,19 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
 Page.displayName = "Page";
 
 export default function Magazine() {
+  // 🚨 [규칙 1] 모든 useState와 useRef는 무조건 최상단에 둡니다.
   const [mounted, setMounted] = useState(false);
+  const [isUnsupported, setIsUnsupported] = useState(false);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const bookRef = useRef<any>(null);
-  const [isUnsupported, setIsUnsupported] = useState(false);
 
+  // 🚨 [규칙 2] 모든 useEffect도 return 문이 나오기 전에 전부 선언해야 합니다.
   useEffect(() => {
     setMounted(true);
 
     const checkSupport = () => {
       const vw = window.innerWidth;
       const agent = window.navigator.userAgent.toLowerCase();
-
-      // 1. 너무 작은 화면 (예: 320px 이하 구형 폰)
-      // 2. 인터넷 익스플로러 등 구형 브라우저 체크
       const isIE =
         agent.indexOf("trident") !== -1 || agent.indexOf("msie") !== -1;
 
@@ -71,20 +68,32 @@ export default function Magazine() {
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
     };
 
+    // 초기 실행
     checkSupport();
     updateSize();
 
-    window.addEventListener("resize", () => {
+    // 이벤트 리스너 통합 (메모리 누수 방지)
+    const handleResize = () => {
       checkSupport();
       updateSize();
-    });
+    };
 
-    return () => window.removeEventListener("resize", updateSize);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", () =>
+      setTimeout(handleResize, 300),
+    );
+
+    // 클린업 함수
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
   }, []);
 
+  // 🚨 [규칙 3] 모든 훅(Hook) 선언이 끝난 "후"에 early return을 배치합니다.
+  // 절대 이 아래에는 useState나 useEffect가 있으면 안 됩니다!
   if (!mounted) return null;
 
-  // 🚨 지원하지 않는 환경일 때 보여줄 화면
   if (isUnsupported) {
     return (
       <div id="unsupported-overlay" style={{ display: "flex" }}>
@@ -98,55 +107,20 @@ export default function Magazine() {
     );
   }
 
-  useEffect(() => {
-    setMounted(true);
-    const updateSize = () => {
-      // 🚨 [복구] 카톡 브라우저 '진짜' 가시 영역 높이 대응
-      const vh = window.visualViewport
-        ? window.visualViewport.height
-        : window.innerHeight;
-      const vw = window.innerWidth;
-
-      const isDesktop = vw > 768 && vw > vh;
-
-      if (isDesktop) {
-        // [복구] 데스크탑: 100% 풀사이즈 (양면)
-        setSize({ width: Math.floor(vw / 2), height: vh });
-      } else {
-        // [복구] 모바일: 100% 풀사이즈 (단면)
-        setSize({ width: vw, height: vh });
-      }
-
-      document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
-    };
-
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    window.addEventListener("orientationchange", () =>
-      setTimeout(updateSize, 300),
-    );
-
-    return () => {
-      window.removeEventListener("resize", updateSize);
-      window.removeEventListener("orientationchange", updateSize);
-    };
-  }, []);
-
-  if (!mounted || size.width === 0) return null;
-
+  // 🚨 [규칙 4] 정상적인 렌더링 화면 반환
   return (
     <main
       style={{
-        width: "100vw",
+        width: "100%",
         height: "calc(var(--vh, 1vh) * 100)",
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "#ffffff", // 🚨 [사장님 요청 1] 검은 배경 삭제
+        backgroundColor: "#ffffff",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        overflow: "hidden", // 메인 휠 방지
+        overflow: "hidden",
       }}
     >
       <nav
@@ -187,6 +161,7 @@ export default function Magazine() {
           WORKS
         </button>
       </nav>
+
       {/* @ts-ignore */}
       <HTMLFlipBook
         ref={bookRef}
@@ -207,7 +182,6 @@ export default function Magazine() {
         startPage={0}
         className="magazine-canvas"
         maxShadowOpacity={0.4}
-        /* 🚨 [복구] 풀 로드 및 드래그 이벤트 개방 */
         mobileScrollSupport={true}
         clickEventForward={true}
         useMouseEvents={true}
