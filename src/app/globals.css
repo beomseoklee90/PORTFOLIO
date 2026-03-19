@@ -1,68 +1,41 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
 @tailwind base; @tailwind components; @tailwind utilities;
 
-:root { color-scheme: light !important; }
-* { box-sizing: border-box; padding: 0; margin: 0; font-family: 'Pretendard', sans-serif !important; }
+:root { color-scheme: dark !important; }
 
-/* 🚨 [스크롤바 숨기기 정석] 스크롤은 되지만 휠은 안 보이게 */
+/* 🚨 [휠 박멸] 전역 스크롤바 숨기기 */
 html, body {
   width: 100vw;
   height: calc(var(--vh, 1vh) * 100);
-  overflow-x: hidden;
-  overflow-y: auto;
-  background-color: #080808;
-  
-  /* IE and Edge */
-  -ms-overflow-style: none;
-  /* Firefox */
-  scrollbar-width: none;
+  overflow: auto; /* 스크롤 기능은 유지 */
+  background-color: #121212; /* 🚨 배경색: 흰색과 대비를 줄인 고급스러운 진회색 */
+  margin: 0; padding: 0;
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-/* Chrome, Safari, Opera */
 body::-webkit-scrollbar {
-  display: none;
+  display: none !important; /* 🚨 Chrome/Safari 휠 완벽 제거 */
 }
 
-/* 🚨 [종이 겹침 효과] 모서리에 실제 페이지들이 쌓인 느낌 */
+/* 🚨 [책 모서리 둥글게] 잡지 전체 외곽 곡률 적용 */
 .magazine-canvas {
+  border-radius: 20px !important; /* 🚨 좌측 상단 포함 모든 모서리 */
+  overflow: hidden !important; 
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
   position: relative;
-  filter: drop-shadow(0 20px 50px rgba(0,0,0,0.8));
 }
 
-/* 책의 오른쪽/아래쪽 모서리에 종이 층을 만드는 가짜 요소 */
+/* 책 뒤에 겹쳐 보이는 페이지 효과 (종이 결) */
 .magazine-canvas::before {
   content: "";
   position: absolute;
-  top: 4px; left: 4px; right: -6px; bottom: -6px; /* 살짝 어긋나게 배치해서 두께감 형성 */
-  background: #fff;
+  top: 5px; left: 5px; right: -8px; bottom: -8px;
+  background: #fdfdfd;
   z-index: -1;
-  border-radius: 4px;
-  /* 종이 옆면의 결(선)을 표현 */
-  background-image: repeating-linear-gradient(
-    to bottom,
-    #e0e0e0 0px,
-    #e0e0e0 1px,
-    #ffffff 1px,
-    #ffffff 3px
-  );
-  border: 1px solid rgba(0,0,0,0.1);
-}
-
-.magazine-canvas::after {
-  content: "";
-  position: absolute;
-  top: 8px; left: 8px; right: -12px; bottom: -12px; /* 더 아래층 종이 */
-  background: #eee;
-  z-index: -2;
-  border-radius: 4px;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    #d0d0d0 0px,
-    #d0d0d0 1px,
-    #f0f0f0 1px,
-    #f0f0f0 3px
-  );
-  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 20px;
+  background-image: repeating-linear-gradient(to bottom, #e5e5e5 0px, #e5e5e5 1px, #ffffff 1px, #ffffff 3px);
+  border: 1px solid rgba(0,0,0,0.08);
 }
 
 .page-section {
@@ -70,9 +43,10 @@ body::-webkit-scrollbar {
   position: relative;
   background-color: #fff;
   display: flex; flex-direction: column;
-  padding: 12vh 30px 18vh;
-  /* 책 중앙(접히는 부분) 그림자 처리 */
-  background: linear-gradient(to right, #f0f0f0 0%, #ffffff 3%, #ffffff 100%);
+  /* 모바일 여백: 글씨 내림 / 선 올림 */
+  padding: 12vh 32px 18vh;
+  /* 🚨 책등 부분 곡률 표현 */
+  background: linear-gradient(to right, #f7f7f7 0%, #ffffff 5%, #ffffff 100%);
   isolation: isolate;
 }
 
