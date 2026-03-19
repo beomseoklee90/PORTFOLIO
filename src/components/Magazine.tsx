@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 컴포넌트 임포트 (사장님 폴더 구조에 맞게 유지)
+// 컴포넌트 임포트
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -11,7 +11,7 @@ import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
-// 🚨 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
+// 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
 const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
     <div
@@ -37,7 +37,6 @@ export default function Magazine() {
   useEffect(() => {
     setMounted(true);
     const updateSize = () => {
-      // 카톡 브라우저 상하단 바를 제외한 '진짜' 가시 영역 높이
       const vh = window.visualViewport
         ? window.visualViewport.height
         : window.innerHeight;
@@ -46,14 +45,13 @@ export default function Magazine() {
       const isDesktop = vw > 768 && vw > vh;
 
       if (isDesktop) {
-        // 🚨 데스크탑: 100% 꽉 채우기 (양면이니까 width는 반갈죽)
+        // 데스크탑: 100% 꽉 채우기 (양면이니까 width는 반갈죽)
         setSize({ width: Math.floor(vw / 2), height: vh });
       } else {
-        // 🚨 모바일: 100% 꽉 채우기 (단면)
+        // 모바일: 100% 꽉 채우기 (단면)
         setSize({ width: vw, height: vh });
       }
 
-      // CSS에서 쓸 진짜 vh 변수 전달
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
     };
 
@@ -85,7 +83,6 @@ export default function Magazine() {
         alignItems: "center",
       }}
     >
-      {/* 🚨 네비게이션: 클릭 이벤트를 뺏기지 않도록 확실한 위치 고정 */}
       <nav
         style={{
           position: "fixed",
@@ -145,7 +142,7 @@ export default function Magazine() {
         startPage={0}
         className="magazine-canvas"
         maxShadowOpacity={0.4}
-        /* 🚨 터치 넘기기 부활 핵심 옵션 */
+        /* 터치 넘기기 및 휠 방지 조화 옵션 */
         mobileScrollSupport={true}
         clickEventForward={true}
         useMouseEvents={true}

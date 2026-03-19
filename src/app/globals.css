@@ -65,7 +65,7 @@ html, body {
     box-shadow: 0 30px 60px rgba(0,0,0,0.6) !important;
   }
   .page-section {
-    /* 사장님 맞춤 모바일 여백: 글 내림, 선 올림 */
-    padding: 18vh 24px 22vh; 
+    /* 🚨 사장님 맞춤 수술 완료: 하단 패딩을 28vh로 대폭 올려서 선과 번호를 위로 밀어 올림 */
+    padding: 18vh 24px 28vh !important; 
   }
 }
