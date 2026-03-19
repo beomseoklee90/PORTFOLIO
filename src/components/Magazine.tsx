@@ -11,16 +11,17 @@ import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
-// 잡지 껍데기(Page)에서 이벤트를 뺏지 않도록 스타일 최적화
 const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
   ({ children }, ref) => (
+    // 🚨 여기서도 내부 스크롤을 허용해야 합니다.
     <div
       ref={ref}
       style={{
         width: "100%",
         height: "100%",
         backgroundColor: "#fff",
-        overflow: "hidden",
+        overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
       {children}
@@ -45,11 +46,13 @@ export default function Magazine() {
       const isDesktop = vw > 768 && vw > vh;
 
       if (isDesktop) {
-        // 데스크탑: 100% 꽉 채우기 (양면이니까 width는 반갈죽)
+        // PC: 100% 꽉 채우는 풀사이즈 (양면)
         setSize({ width: Math.floor(vw / 2), height: vh });
       } else {
-        // 모바일: 100% 꽉 채우기 (단면)
-        setSize({ width: vw, height: vh });
+        // 🚨 모바일 세로: 100%가 아니라 90% 크기로 띄워서 '드래그 가능한 객체'임을 시각적으로 강조
+        const targetWidth = Math.floor(vw * 0.92);
+        const targetHeight = Math.floor(vh * 0.88);
+        setSize({ width: targetWidth, height: targetHeight });
       }
 
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
@@ -61,10 +64,7 @@ export default function Magazine() {
       setTimeout(updateSize, 300),
     );
 
-    return () => {
-      window.removeEventListener("resize", updateSize);
-      window.removeEventListener("orientationchange", updateSize);
-    };
+    return () => window.removeEventListener("resize", updateSize);
   }, []);
 
   if (!mounted || size.width === 0) return null;
@@ -86,11 +86,11 @@ export default function Magazine() {
       <nav
         style={{
           position: "fixed",
-          top: "30px",
-          right: "40px",
+          top: "20px",
+          right: "30px",
           zIndex: 9999,
           display: "flex",
-          gap: "2rem",
+          gap: "1.5rem",
           mixBlendMode: "difference",
         }}
       >
@@ -141,12 +141,12 @@ export default function Magazine() {
         autoSize={true}
         startPage={0}
         className="magazine-canvas"
-        maxShadowOpacity={0.4}
-        /* 터치 넘기기 및 휠 방지 조화 옵션 */
-        mobileScrollSupport={true}
+        maxShadowOpacity={0.5}
+        /* 🚨 터치로 드래그해서 넘기기 최적화 */
+        swipeDistance={20} // 살짝만 드래그해도 반응하도록 수치 낮춤
         clickEventForward={true}
         useMouseEvents={true}
-        swipeDistance={30}
+        mobileScrollSupport={true}
       >
         <Page>
           <CoverLeftPage />
