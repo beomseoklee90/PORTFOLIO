@@ -1,4 +1,4 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
 
 /* Tailwind 설정보다 아래, 하지만 다른 스타일보다는 위 */
 @tailwind base;
@@ -7,7 +7,18 @@
 
 /* 모든 요소에 강제로 고딕 적용 */
 * {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif !important;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    "Helvetica Neue",
+    "Segoe UI",
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    "Malgun Gothic",
+    sans-serif !important;
 }
 
 :root {
@@ -21,4 +32,21 @@ body {
   background: rgb(var(--background-start-rgb));
   -webkit-font-smoothing: antialiased; /* 글자를 더 매끄럽게 */
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 모든 페이지 전환 요소나 메인 컨테이너에 적용 */
+* {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
+/* 스크롤 시 지직거림 방지 */
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* iOS 카톡 브라우저용 부드러운 스크롤 */
 }
