@@ -2,6 +2,14 @@
 import React from "react";
 import "./globals.css";
 
+// layout.tsx 상단에 추가
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false, // 화면 축소/확대 시 발생하는 렌더링 오류 방지
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -9,12 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      {/* 바디에 직접 백그라운드 컬러를 박아서 CSS 로드 전 깜빡임을 방어합니다 */}
-      <body style={{ backgroundColor: "#ffffff" }}>{children}</body>
+      <body style={{ backgroundColor: "#ffffff", overscrollBehavior: "none" }}>
+        {children}
+      </body>
     </html>
   );
 }
-
 export const metadata = {
   // 기존 설정들...
   // 1. 기본 타이틀 및 템플릿 설정

@@ -78,3 +78,23 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+/* 페이지 전체 컨테이너에 적용하여 레이아웃이 쪼개지는 걸 방지 */
+main, body {
+  /* 브라우저에게 이 요소는 독립적임을 알려 쪼개짐 방지 */
+  contain: paint; 
+  /* 가상 요소들이 겹쳐서 4개로 보이는 현상 차단 */
+  isolation: isolate; 
+}
+
+/* Next.js의 고질적인 '전환 시 쪼개짐' 방지 */
+#__next {
+  position: relative;
+  z-index: 1;
+}
+
+/* 모든 애니메이션과 전환 효과를 강제로 끄기 (카톡 전용) */
+* {
+  transition: none !important;
+  animation: none !important;
+}
