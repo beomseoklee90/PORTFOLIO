@@ -73,32 +73,55 @@ html, body {
   }
 }
 
-/* [모바일/세로 모드] [복구] 진짜 책 느낌 (모서리 둥글게, 겹침 그림자) */
+/* 🚨 여기서부터 복사해서 기존 모바일 미디어 쿼리를 덮어씌우세요 */
 @media (max-width: 768px) {
   .magazine-canvas {
     border-radius: 12px !important;
     box-shadow: 0 30px 60px rgba(0,0,0,0.6) !important;
   }
   
-  /* 🚨 [사장님 요청 2] 모바일에서 글 중앙 배치 */
   .page-section {
-    /* 양옆 패딩을 크게 줘서 텍스트를 중앙으로 당김 */
-    padding: 15vh 12vw 20vh !important; 
-    justify-content: center;
+    /* 🚨 1. 상단 여백 대폭 추가 (110px) : Navbar와 머리 부딪힘 방지 */
+    /* 🚨 2. 좌우 여백 (24px) : 매거진스러운 깔끔한 라인 */
+    padding: 110px 24px 80px !important; 
+    
+    /* 🚨 3. 요소를 위에서부터 차곡차곡, 왼쪽으로 밀착 */
+    justify-content: flex-start !important; /* 수직 최상단부터 시작 */
+    align-items: flex-start !important;     /* 수평 왼쪽 끝으로 밀착 */
   }
 
+  /* 🚨 4. 모든 텍스트 완벽 '왼쪽 정렬' 강제 */
+  .page-section h1, .page-section p, .page-section div {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: left !important; /* 중앙 -> 왼쪽으로 변경 */
+    
+    /* 글씨 오른쪽 넘침 방지 안전장치 유지 */
+    word-break: break-word !important; 
+    overflow-wrap: anywhere !important; 
+    white-space: normal !important;
+  }
+
+  /* 모바일 잡지 타이포그래피 정돈 */
   .page-section h1 {
-    font-size: 2.2rem !important;
-    text-align: center; /* 가운데 정렬 */
-    word-break: keep-all;
-    margin-bottom: 20px;
+    font-size: 1.8rem !important; /* 제목을 살짝 더 키워서 잡지 포스 강조 */
+    line-height: 1.2;
+    margin-bottom: 24px !important; /* 제목과 본문 사이 넉넉한 여백 */
   }
   
   .page-section p {
-    text-align: center; /* 본문 가운데 정렬 */
-    font-size: 1.125rem;
+    font-size: 0.95rem !important;
+    line-height: 1.6;
+    color: #222;
+    margin-bottom: 16px !important;
+  }
+
+  .magazine-image-container {
+    width: 100%; 
+    margin-bottom: 24px !important;
   }
 }
+/* 🚨 여기까지 덮어씌우기 */
 
 /* [복구] 이미지 하드웨어 가속 */
 img {
