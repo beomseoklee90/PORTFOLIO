@@ -1,9 +1,7 @@
 "use client";
-
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
-// 컴포넌트 임포트
 import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
@@ -12,22 +10,19 @@ import LawyerLeftPage from "./pages/LawyerLeftPage";
 import LawyerRightPage from "./pages/LawyerRightPage";
 
 const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
-  ({ children }, ref) => {
-    return (
-      <div
-        ref={ref}
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "relative",
-          backgroundColor: "#ffffff",
-          overflow: "hidden",
-        }}
-      >
-        {children}
-      </div>
-    );
-  },
+  ({ children }, ref) => (
+    <div
+      ref={ref}
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        backgroundColor: "#fff",
+      }}
+    >
+      {children}
+    </div>
+  ),
 );
 Page.displayName = "Page";
 
@@ -43,8 +38,11 @@ export default function Magazine() {
         ? window.visualViewport.height
         : window.innerHeight;
       const vw = window.innerWidth;
+
+      // 🚨 [가로 모드 대응] 가로로 돌리면 한 페이지가 아니라 두 페이지 비율로 자동 전환
+      const isLandscape = vw > vh;
       setSize({
-        width: vw < 768 ? vw : Math.floor(vw / 2),
+        width: isLandscape ? Math.floor(vw / 2) : vw,
         height: vh,
       });
       document.documentElement.style.setProperty("--vh", `${vh * 0.01}px`);
@@ -52,13 +50,14 @@ export default function Magazine() {
 
     updateSize();
     window.addEventListener("resize", updateSize);
-    if (window.visualViewport)
-      window.visualViewport.addEventListener("resize", updateSize);
+    // 가로/세로 전환 이벤트 추가
+    window.addEventListener("orientationchange", () =>
+      setTimeout(updateSize, 200),
+    );
 
     return () => {
       window.removeEventListener("resize", updateSize);
-      if (window.visualViewport)
-        window.visualViewport.removeEventListener("resize", updateSize);
+      window.removeEventListener("orientationchange", updateSize);
     };
   }, []);
 
@@ -135,15 +134,11 @@ export default function Magazine() {
           maxHeight={size.height}
           showCover={false}
           drawShadow={true}
-          usePortrait={window.innerWidth < 768}
-          flippingTime={800} // 전환 속도를 살짝 높여 반짝임 인지 저하
+          usePortrait={window.innerWidth < window.innerHeight} // 🚨 가로세로 자동 감지
+          flippingTime={800}
           autoSize={true}
           startPage={0}
           className="magazine-canvas"
-          // 🚨 [반짝임 방지 핵심] 모바일 성능 최적화 옵션
-          mobileScrollSupport={false}
-          swipeDistance={30}
-          clickEventForward={true}
         >
           <Page>
             <CoverLeftPage />
