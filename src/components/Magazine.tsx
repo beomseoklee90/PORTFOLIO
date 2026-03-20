@@ -168,19 +168,20 @@ export default function Magazine() {
         minHeight={size.height}
         maxHeight={size.height}
         showCover={false}
-        drawShadow={true}
+        // 🚨 핵심 원복 1: 어제 반짝임을 완벽하게 잡았던 1등 공신 (그림자 연산 차단)
+        drawShadow={false}
+        maxShadowOpacity={0}
         usePortrait={
           window.innerWidth <= 768 || window.innerWidth <= window.innerHeight
         }
-        flippingTime={1000}
+        // 🚨 핵심 원복 2: 어제 쾌적했던 그 속도로 롤백 (1000 -> 400)
+        flippingTime={400}
         mobileScrollSupport={true}
-        maxShadowOpacity={0.2}
         swipeDistance={15}
         autoSize={true}
         startPage={0}
         clickEventForward={true}
         useMouseEvents={true}
-        // 🚨 문제가 되었던 className과 style 속성을 삭제했습니다.
       >
         <Page>
           <CoverLeftPage />
