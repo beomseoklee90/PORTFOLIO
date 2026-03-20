@@ -20,7 +20,7 @@ export default function LawyerLeftPage() {
         className="w-full h-full relative magazine-image-container"
         style={{ isolation: "isolate" }}
       >
-        <Image
+        <img
           src="/images/lawyer_visual.webp"
           alt="Premium Lawyer Branding Concept"
           loading="eager" /* 무조건 미리 가져오기 */
@@ -33,7 +33,6 @@ export default function LawyerLeftPage() {
             willChange: "transform",
             backfaceVisibility: "hidden",
           }}
-          loading="eager" /* 무조건 미리 가져오기 */
         />
 
         {/* 3. 이미지 위 오버레이 문구: 

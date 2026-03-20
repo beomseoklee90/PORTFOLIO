@@ -18,23 +18,19 @@ export default function CoverLeftPage() {
           borderRadius: 0, // 표지이므로 꽉 채우기 위해 라운딩 제거 (원하시면 12px로 변경)
         }}
       >
-        <Image
+        <img
           src="/images/main_visual.webp"
           alt="Main Visual"
-          fill
+          loading="eager" /* 무조건 미리 가져오기 */
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
+            /* GPU 가속의 핵심 */
             transform: "translateZ(0)",
             willChange: "transform",
-            display: "block",
             backfaceVisibility: "hidden",
           }}
-          sizes="50vw"
-          priority={true}
-          unoptimized={true} // 렌더링 부하 감소
         />
 
         {/* 텍스트가 필요하다면 이 아래에 배치 (모바일 좌측 정렬 자동 적용됨) */}

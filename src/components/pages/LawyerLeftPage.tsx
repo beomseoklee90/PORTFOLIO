@@ -55,21 +55,19 @@ export default function LawyerLeftPage() {
             style={{ position: "relative", width: "100%", height: "100%" }}
             className="magazine-image-container"
           >
-            <Image
+            <img
               src="/images/lawyer_visual.webp"
               alt="Lawyer Visual PC"
-              fill
+              loading="eager" /* 무조건 미리 가져오기 */
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
+                /* GPU 가속의 핵심 */
                 transform: "translateZ(0)",
                 willChange: "transform",
-                display: "block",
+                backfaceVisibility: "hidden",
               }}
-              unoptimized
-              priority={true}
             />
           </div>
         )}
