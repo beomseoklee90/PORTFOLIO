@@ -20,8 +20,6 @@ export default function IntroLeftPage() {
           src="/images/intro_visual.webp"
           alt="Philosophy Visual"
           fill
-          priority={true} // 🚨 다음 페이지 미리 로딩 (반짝임 방지 핵심)
-          unoptimized={true}
           style={{
             width: "100%",
             height: "100%",
@@ -30,7 +28,11 @@ export default function IntroLeftPage() {
             transform: "translateZ(0)",
             willChange: "transform",
             display: "block",
+            backfaceVisibility: "hidden",
           }}
+          sizes="50vw"
+          priority={true}
+          unoptimized={true} // 렌더링 부하 감소
         />
       </div>
 

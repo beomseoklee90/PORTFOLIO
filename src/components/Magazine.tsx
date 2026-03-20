@@ -30,13 +30,11 @@ const Page = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
 Page.displayName = "Page";
 
 export default function Magazine() {
-  // 🚨 [규칙 1] 모든 useState와 useRef는 무조건 최상단에 둡니다.
   const [mounted, setMounted] = useState(false);
   const [isUnsupported, setIsUnsupported] = useState(false);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const bookRef = useRef<any>(null);
 
-  // 🚨 [규칙 2] 모든 useEffect도 return 문이 나오기 전에 전부 선언해야 합니다.
   useEffect(() => {
     setMounted(true);
 
@@ -90,8 +88,6 @@ export default function Magazine() {
     };
   }, []);
 
-  // 🚨 [규칙 3] 모든 훅(Hook) 선언이 끝난 "후"에 early return을 배치합니다.
-  // 절대 이 아래에는 useState나 useEffect가 있으면 안 됩니다!
   if (!mounted) return null;
 
   if (isUnsupported) {
@@ -107,7 +103,6 @@ export default function Magazine() {
     );
   }
 
-  // 🚨 [규칙 4] 정상적인 렌더링 화면 반환
   return (
     <main
       style={{
@@ -177,17 +172,15 @@ export default function Magazine() {
         usePortrait={
           window.innerWidth <= 768 || window.innerWidth <= window.innerHeight
         }
-        flippingTime={1000} // 🚨 0.4초 -> 1.0초로 늦췄습니다. 훨씬 묵직하고 부드럽게 넘어갑니다.
-        mobileScrollSupport={true} // 🚨 다시 켰습니다. 모바일에서 휙휙 잘 넘어가야죠.
-        maxShadowOpacity={0.2} // 그림자를 아주 살짝만 줘서 입체감은 살리고 연산 부하는 줄였습니다.
-        swipeDistance={15} // 살짝만 밀어도 잘 넘어가게 감도를 높였습니다.
+        flippingTime={1000}
+        mobileScrollSupport={true}
+        maxShadowOpacity={0.2}
+        swipeDistance={15}
         autoSize={true}
         startPage={0}
-        className="magazine-canvas"
         clickEventForward={true}
         useMouseEvents={true}
-        /* 🚨 브라우저가 렌더링을 미리 준비하도록 하는 스타일 주입 */
-        style={{ transform: "translateZ(0)" }}
+        // 🚨 문제가 되었던 className과 style 속성을 삭제했습니다.
       >
         <Page>
           <CoverLeftPage />

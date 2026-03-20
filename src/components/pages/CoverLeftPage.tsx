@@ -30,9 +30,11 @@ export default function CoverLeftPage() {
             transform: "translateZ(0)",
             willChange: "transform",
             display: "block",
+            backfaceVisibility: "hidden",
           }}
-          priority={true} // 🚨 다음 페이지 넘길 때 하얗게 뜨는 현상 방지 (미리 로드)
-          unoptimized={true}
+          sizes="50vw"
+          priority={true}
+          unoptimized={true} // 렌더링 부하 감소
         />
 
         {/* 텍스트가 필요하다면 이 아래에 배치 (모바일 좌측 정렬 자동 적용됨) */}

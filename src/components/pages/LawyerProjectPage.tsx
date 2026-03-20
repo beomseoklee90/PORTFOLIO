@@ -23,19 +23,17 @@ export default function LawyerLeftPage() {
         <Image
           src="/images/lawyer_visual.webp"
           alt="Premium Lawyer Branding Concept"
-          fill
+          loading="eager" /* 무조건 미리 가져오기 */
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            /* 🚨 핵심: 그래픽 카드(GPU)를 강제로 깨워서 미리 그려두게 함 */
+            /* GPU 가속의 핵심 */
             transform: "translateZ(0)",
             willChange: "transform",
-            display: "block",
+            backfaceVisibility: "hidden",
           }}
-          sizes="50vw"
-          priority={true}
-          unoptimized={true} // 렌더링 부하 감소
+          loading="eager" /* 무조건 미리 가져오기 */
         />
 
         {/* 3. 이미지 위 오버레이 문구: 

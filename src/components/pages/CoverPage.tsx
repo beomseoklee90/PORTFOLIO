@@ -23,9 +23,6 @@ export default function CoverPage() {
           src="/images/image_0.webp"
           alt="Architect Visual"
           fill
-          className="object-cover grayscale"
-          priority
-          unoptimized={true} // 처리 부하 감소
           style={{
             width: "100%",
             height: "100%",
@@ -34,7 +31,11 @@ export default function CoverPage() {
             transform: "translateZ(0)",
             willChange: "transform",
             display: "block",
+            backfaceVisibility: "hidden",
           }}
+          sizes="50vw"
+          priority={true}
+          unoptimized={true} // 렌더링 부하 감소
         />
 
         {/* 3. 사진 위 오버레이 텍스트: 
