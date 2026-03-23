@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 
 // 컴포넌트 임포트
-import CoverLeftPage from "./pages/CoverLeftPage";
 import CoverRightPage from "./pages/CoverRightPage";
+import CoverLeftPage from "./pages/CoverLeftPage";
 import IntroLeftPage from "./pages/IntroLeftPage";
 import IntroRightPage from "./pages/IntroRightPage";
 import LawyerLeftPage from "./pages/LawyerLeftPage";
@@ -184,7 +184,7 @@ export default function Magazine() {
           window.innerWidth <= 768 || window.innerWidth <= window.innerHeight
         }
         // 🚨 핵심 원복 2: 어제 쾌적했던 그 속도로 롤백 (1000 -> 400)
-        flippingTime={700}
+        flippingTime={1000}
         mobileScrollSupport={true}
         swipeDistance={15}
         autoSize={true}
@@ -240,6 +240,7 @@ export default function Magazine() {
               fontStyle: "italic",
               letterSpacing: "0.05em",
               color: "#000",
+              backgroundColor: "white",
             }}
           >
             Swipe or click to turn

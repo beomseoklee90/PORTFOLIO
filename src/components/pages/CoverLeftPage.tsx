@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-// 안 쓰는 next/image 임포트는 지웠습니다.
 
 export default function CoverLeftPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -13,35 +12,64 @@ export default function CoverLeftPage() {
   }, []);
 
   return (
-    <section className="page-section" style={{ padding: 0 }}>
-      {/* 1. magazine-image-container: globals.css에 정의된 라운딩 및 그림자 적용
-         2. isolation: "isolate": 내부 요소와 외부 레이어 간섭 차단 (반짝임 방지)
-      */}
+    <section
+      className="page-section"
+      style={{
+        backgroundColor: "#ffffff",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        /* 모바일과 PC 여백 최적화 */
+        padding: isMobile ? "40px" : "100px 120px",
+        position: "relative", // 🚨 하단 텍스트의 기준점을 잡기 위해 추가
+      }}
+    >
       <div
-        className="magazine-image-container"
         style={{
-          width: "100%",
-          height: "100%",
-          position: "relative",
+          /* 1. 선과 텍스트를 하나의 그룹으로 묶어 렌더링 격리 */
+          borderLeft: isMobile ? "2px solid #000" : "3px solid #000",
+          paddingLeft: isMobile ? "24px" : "40px",
           isolation: "isolate",
-          borderRadius: 12,
+          display: "block",
+          width: "100%",
         }}
       >
-        <img
-          src="/images/main_visual.webp"
-          alt="Main Visual"
-          loading="eager" /* 무조건 미리 가져오기 */
+        {/* 2. 타이틀: Cormorant Garamond의 우아함을 살리되 깨짐 방지 적용 */}
+        <h1
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            /* GPU 가속의 핵심 */
-            transform: "translateZ(0)",
-            willChange: "transform",
-            backfaceVisibility: "hidden",
-            borderRadius: 12,
+            fontSize: isMobile ? "50px" : "100px", // 타이틀 임팩트 강화
+            fontFamily: '"Cormorant Garamond", serif',
+            fontStyle: "italic",
+            color: "#000",
+            lineHeight: "0.85",
+            marginBottom: "30px",
+            letterSpacing: "-0.03em",
+            fontWeight: "400",
+            display: "block",
+            wordBreak: "keep-all",
           }}
-        />
+        >
+          ICE
+          <br />
+          BREAKING
+          <br />
+          LAB.
+        </h1>
+
+        {/* 3. 하단 텍스트: globals.css의 category 스타일 활용 */}
+        <p
+          className="category"
+          style={{
+            fontSize: isMobile ? "11px" : "15px",
+            fontWeight: "900",
+            letterSpacing: "0.4em",
+            color: "#666",
+            /* 대문자 변환은 이미 category 클래스에 포함되어 있으나 명시적 유지 */
+            textTransform: "uppercase",
+          }}
+        >
+          Landing Page Designer
+        </p>
       </div>
     </section>
   );
