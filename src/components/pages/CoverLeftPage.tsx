@@ -1,8 +1,17 @@
 "use client";
-import Image from "next/image";
-import React from "react";
+import React, { useState, useEffect } from "react";
+// 안 쓰는 next/image 임포트는 지웠습니다.
 
 export default function CoverLeftPage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
     <section className="page-section" style={{ padding: 0 }}>
       {/* 1. magazine-image-container: globals.css에 정의된 라운딩 및 그림자 적용
@@ -15,7 +24,7 @@ export default function CoverLeftPage() {
           height: "100%",
           position: "relative",
           isolation: "isolate",
-          borderRadius: 0, // 표지이므로 꽉 채우기 위해 라운딩 제거 (원하시면 12px로 변경)
+          borderRadius: 12,
         }}
       >
         <img
@@ -30,20 +39,9 @@ export default function CoverLeftPage() {
             transform: "translateZ(0)",
             willChange: "transform",
             backfaceVisibility: "hidden",
+            borderRadius: 12,
           }}
         />
-
-        {/* 텍스트가 필요하다면 이 아래에 배치 (모바일 좌측 정렬 자동 적용됨) */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "10%",
-            left: "24px",
-            zIndex: 10,
-          }}
-        >
-          {/* 예시: <h1 style={{ color: "#fff" }}>ICE BREAKING LAB</h1> */}
-        </div>
       </div>
     </section>
   );

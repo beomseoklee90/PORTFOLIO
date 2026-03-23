@@ -21,6 +21,7 @@ export default function CoverRightPage() {
         justifyContent: "center",
         /* 모바일과 PC 여백 최적화 */
         padding: isMobile ? "40px" : "100px 120px",
+        position: "relative", // 🚨 하단 텍스트의 기준점을 잡기 위해 추가
       }}
     >
       <div
